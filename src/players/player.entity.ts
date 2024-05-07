@@ -9,9 +9,6 @@ export class Player {
   @Column()
   name: string;
 
-  @Column()
-  accountId: number;
-
   @ManyToOne(() => Account, account => account.players)
   account: Account;
 
