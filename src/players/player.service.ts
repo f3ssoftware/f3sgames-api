@@ -11,7 +11,7 @@ export class PlayerService {
     private playerRepository: Repository<Player>,
   ) {}
 
-  async findByPlayerName(name: string): Promise<Player | undefined> {
+  async findByPlayerName(name: string): Promise<Player | undefined | null> {
     return this.playerRepository.findOne({ where: { name }, relations: ['account'] });
   }
 

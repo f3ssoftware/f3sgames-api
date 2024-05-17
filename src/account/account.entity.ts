@@ -4,40 +4,40 @@ import { Player } from '../players/player.entity';
 @Entity()
 export class Account {
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number;
 
   @Column()
-  name: string;
+  name!: string;
 
   @Column()
-  password: string;
+  password!: string;
 
   @Column()
-  email: string;
+  email!: string;
 
   @Column({ name: 'premdays' })
-  premDays: number;
+  premDays!: number;
 
   @Column({ name: 'premdays_purchased' })
-  premDaysPurchased: number;
+  premDaysPurchased!: number;
 
   @Column()
-  coins: number;
+  coins!: number;
 
   @Column({ name: 'coins_transferable' })
-  coinsTransferable: number; // Adicionando a propriedade coinsTransferable aqui
+  coinsTransferable!: number; // Adicionando a propriedade coinsTransferable aqui
 
   @Column({ name: 'tournament_coins' })
-  tournamentCoins: number;
+  tournamentCoins!: number;
 
   @Column({ name: 'creation' })
-  creation: number;
+  creation!: number;
 
   @Column({ name: 'recruiter' })
-  recruiter: number;
+  recruiter!: number;
 
   @OneToMany(() => Player, player => player.account)
-  players: Player[];
+  players!: Player[];
 
   
 }
