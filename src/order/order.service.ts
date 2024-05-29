@@ -32,7 +32,7 @@ export class PaymentService {
     } else {
       const creditCardOrderDto: PagseguroCreateOrderCreditCardDto = {
         ...orderData,
-        reference_id: orderData.referenceId,  // Use a propriedade correta
+        reference_id: orderData.referenceId, 
       } as PagseguroCreateOrderCreditCardDto;
       response = await this.pagseguroIntegrationService.createCreditCardOrder(creditCardOrderDto);
     }
