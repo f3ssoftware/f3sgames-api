@@ -1,6 +1,15 @@
-export class PagseguroCreateOrderCreditCardDto {
-  reference_id!: string;
-  customer!: {
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from 'typeorm';
+
+@Entity()
+export class Order {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column()
+  referenceId: string;
+
+  @Column('jsonb')
+  customer: {
     name: string;
     email: string;
     tax_id: string;
@@ -11,13 +20,24 @@ export class PagseguroCreateOrderCreditCardDto {
       type: string;
     }[];
   };
-  items!: {
-    reference_id?: string;
+
+  @Column('jsonb')
+  items: {
     name: string;
     quantity: number;
     unit_amount: number;
   }[];
-  shipping!: {
+
+  @Column('jsonb', { nullable: true })
+  qr_codes?: {
+    amount: {
+      value: number;
+    };
+    expiration_date: string;
+  }[];
+
+  @Column('jsonb')
+  shipping: {
     address: {
       street: string;
       number: string;
@@ -29,8 +49,12 @@ export class PagseguroCreateOrderCreditCardDto {
       postal_code: string;
     };
   };
-  notification_urls!: string[];
-  charges!: {
+
+  @Column('jsonb', { nullable: true })
+  notification_urls?: string[];
+
+  @Column('jsonb')
+  charges?: {
     reference_id: string;
     description: string;
     amount: {
@@ -53,7 +77,7 @@ export class PagseguroCreateOrderCreditCardDto {
         };
       };
     };
-    sub_merchant: {
+    sub_merchant?: {
       reference_id: string;
       name: string;
       tax_id: string;
@@ -77,4 +101,13 @@ export class PagseguroCreateOrderCreditCardDto {
     };
     notification_urls: string[];
   }[];
+
+  @Column()
+  status: string;
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @Column({ nullable: true })
+  updatedAt: Date;
 }

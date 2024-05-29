@@ -1,7 +1,6 @@
-// src/create-order.dto.ts
 export class PagseguroCreateOrderPixDto {
-  reference_id: string;
-  customer: {
+  reference_id!: string;
+  customer!: {
     name: string;
     email: string;
     tax_id: string;
@@ -12,18 +11,18 @@ export class PagseguroCreateOrderPixDto {
       type: string;
     }[];
   };
-  items: {
+  items!: {
     name: string;
     quantity: number;
     unit_amount: number;
   }[];
-  qr_codes: {
+  qr_codes!: {
     amount: {
       value: number;
     };
     expiration_date: string;
   }[];
-  shipping: {
+  shipping!: {
     address: {
       street: string;
       number: string;
@@ -35,5 +34,5 @@ export class PagseguroCreateOrderPixDto {
       postal_code: string;
     };
   };
-  notification_urls: string[];
+  notification_urls!: string[];
 }
