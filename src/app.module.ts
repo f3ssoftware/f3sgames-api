@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { PaymentModule } from './order/order.module';
+import { PaymentModule } from './order/order.module';  // Certifique-se de que está importando o PaymentModule
 import { PlayerModule } from './players/player.module';
 import { PagseguroIntegrationModule } from './pagseguro-integration/pagseguro-integration.module';
 
@@ -40,7 +40,7 @@ import { PagseguroIntegrationModule } from './pagseguro-integration/pagseguro-in
       }),
       inject: [ConfigService],
     }),
-    PaymentModule,
+    PaymentModule, 
     PlayerModule,
     PagseguroIntegrationModule,
   ],

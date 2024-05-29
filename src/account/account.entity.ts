@@ -25,7 +25,7 @@ export class Account {
   coins: number;
 
   @Column({ name: 'coins_transferable' })
-  coinsTransferable: number; // Adicionando a propriedade coinsTransferable aqui
+  coinsTransferable: number;
 
   @Column({ name: 'tournament_coins' })
   tournamentCoins: number;

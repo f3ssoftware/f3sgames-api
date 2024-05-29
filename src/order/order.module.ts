@@ -1,11 +1,17 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PaymentService } from './order.service';
-import { Order } from './order.entity'; 
-import { PaymentController } from './order.controller'; 
+import { PaymentController } from './order.controller';
+import { PlayerModule } from '../players/player.module';  // Certifique-se de importar o PlayerModule
+import { PagseguroIntegrationModule } from '../pagseguro-integration/pagseguro-integration.module';
+import { Order } from './order.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Order], 'paymentConnection')],
+  imports: [
+    TypeOrmModule.forFeature([Order], 'paymentConnection'),
+    PlayerModule,  // Adicione o PlayerModule aqui
+    PagseguroIntegrationModule,
+  ],
   providers: [PaymentService],
   controllers: [PaymentController],
 })
