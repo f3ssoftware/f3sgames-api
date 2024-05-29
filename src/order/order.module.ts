@@ -8,7 +8,7 @@ import { Player } from '../players/player.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Order, Player]), // Certifique-se de que ambas as entidades estão importadas
+    TypeOrmModule.forFeature([Order, Player]),
   ],
   providers: [PaymentService, PlayerService],
   controllers: [PaymentController],

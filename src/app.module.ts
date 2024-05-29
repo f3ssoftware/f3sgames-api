@@ -10,8 +10,8 @@ import { AppService } from './app.service';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      isGlobal: true, // Torna o módulo de configuração disponível globalmente
-      envFilePath: '.env', // Especifica o caminho do arquivo .env
+      isGlobal: true, 
+      envFilePath: '.env', 
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],

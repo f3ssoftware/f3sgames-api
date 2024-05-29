@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Order } from './order.entity';
-import { PlayerService } from '../../players/player.service';
+import { PlayerService } from '../players/player.service';
 import axios from 'axios';
 
 @Injectable()
@@ -12,7 +12,7 @@ export class PaymentService {
   constructor(
     @InjectRepository(Order)
     private orderRepository: Repository<Order>,
-    private playerService: PlayerService, // Injete o PlayerService aqui
+    private playerService: PlayerService, 
   ) {}
 
   async createOrder(orderData: Partial<Order>, paymentMethod: 'pix' | 'credit_card'): Promise<Order> {

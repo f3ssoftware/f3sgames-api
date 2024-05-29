@@ -4,7 +4,7 @@ import { PagseguroCreateOrderPixDto } from '../pagseguro-integration/dto/pagsegu
 import { PagseguroCreateOrderCreditCardDto } from '../pagseguro-integration/dto/pagseguro-create-order-creditcard.dto';
 
 @Controller('payments')
-export class PaymentController {
+export class PaymentController {    
   constructor(private readonly paymentService: PaymentService) {}
 
   @Post('pix')
