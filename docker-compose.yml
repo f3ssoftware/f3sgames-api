@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:14
+    container_name: postgres_db
+    environment:
+      POSTGRES_USER: seu_usuario
+      POSTGRES_PASSWORD: sua_senha
+      POSTGRES_DB: payment_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  mariadb:
+    image: mariadb:10.5
+    container_name: mariadb_db
+    environment:
+      MYSQL_ROOT_PASSWORD: sua_senha_root
+      MYSQL_DATABASE: wkotserv_db
+      MYSQL_USER: benedicto
+      MYSQL_PASSWORD: 428181Ab#
+    ports:
+      - "3307:3306"
+    volumes:
+      - mariadbdata:/var/lib/mysql
+      - ./initdb:/docker-entrypoint-initdb.d
+
+volumes:
+  pgdata:
+  mariadbdata:

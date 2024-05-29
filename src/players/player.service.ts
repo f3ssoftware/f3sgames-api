@@ -6,10 +6,9 @@ import { Player } from './player.entity';
 @Injectable()
 export class PlayerService {
   constructor(
-    @InjectRepository(Player)
+    @InjectRepository(Player, 'gameConnection')
     private playerRepository: Repository<Player>,
   ) {}
-
   async findByPlayerName(name: string): Promise<Player | undefined> {
     return this.playerRepository.findOne({ where: { name }, relations: ['account'] });
   }

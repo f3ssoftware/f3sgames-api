@@ -11,7 +11,7 @@ import { v4 as uuidv4 } from 'uuid';
 @Injectable()
 export class PaymentService {
   constructor(
-    @InjectRepository(Order)
+    @InjectRepository(Order, 'paymentConnection')
     private orderRepository: Repository<Order>,
     private playerService: PlayerService,
     private pagseguroIntegrationService: PagseguroIntegrationService,
