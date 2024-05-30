@@ -1,35 +1,6 @@
-export class PagseguroCreateOrderCreditCardDto {
-  reference_id!: string;
-  customer!: {
-    name: string;
-    email: string;
-    tax_id: string;
-    phones: {
-      country: string;
-      area: string;
-      number: string;
-      type: string;
-    }[];
-  };
-  items!: {
-    reference_id?: string;
-    name: string;
-    quantity: number;
-    unit_amount: number;
-  }[];
-  shipping!: {
-    address: {
-      street: string;
-      number: string;
-      complement: string;
-      locality: string;
-      city: string;
-      region_code: string;
-      country: string;
-      postal_code: string;
-    };
-  };
-  notification_urls!: string[];
+import { PagseguroCreateOrderDto } from './pagseguro-create-order.dto';
+
+export class PagseguroCreateOrderCreditCardDto extends PagseguroCreateOrderDto {
   charges!: {
     reference_id: string;
     description: string;

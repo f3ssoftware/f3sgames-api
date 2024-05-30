@@ -9,11 +9,14 @@ export class PagseguroIntegrationService {
   private readonly pagBankApiToken: string;
 
   constructor() {
-    this.pagBankApiUrl = process.env.PAGBANK_API_URL || 'https://api.pagbank.uol.com.br';
+    this.pagBankApiUrl =
+      process.env.PAGBANK_API_URL || 'https://api.pagbank.uol.com.br';
     this.pagBankApiToken = process.env.PAGBANK_API_TOKEN || '';
   }
 
-  async createPixOrder(createOrderDto: PagseguroCreateOrderPixDto): Promise<any> {
+  async createPixOrder(
+    createOrderDto: PagseguroCreateOrderPixDto,
+  ): Promise<any> {
     const response = await axios.post(
       `${this.pagBankApiUrl}/orders`,
       createOrderDto,
@@ -27,7 +30,9 @@ export class PagseguroIntegrationService {
     return response.data;
   }
 
-  async createCreditCardOrder(createOrderDto: PagseguroCreateOrderCreditCardDto): Promise<any> {
+  async createCreditCardOrder(
+    createOrderDto: PagseguroCreateOrderCreditCardDto,
+  ): Promise<any> {
     const response = await axios.post(
       `${this.pagBankApiUrl}/orders`,
       createOrderDto,

@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
-import { Account } from '../account/account.entity'
+import { Account } from '../account/account.entity';
 
-@Entity()
+@Entity({ database: 'gameConnection' })
 export class Player {
   @PrimaryGeneratedColumn()
   id: number;
@@ -9,7 +9,6 @@ export class Player {
   @Column()
   name: string;
 
-  @ManyToOne(() => Account, account => account.players)
+  @ManyToOne(() => Account, (account) => account.players)
   account: Account;
-
 }

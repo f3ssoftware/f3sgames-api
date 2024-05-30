@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 import { Player } from '../players/player.entity';
 
-@Entity()
+@Entity({ database: 'gameConnection' })
 export class Account {
   @PrimaryGeneratedColumn()
   id: number;
@@ -36,8 +36,6 @@ export class Account {
   @Column({ name: 'recruiter' })
   recruiter: number;
 
-  @OneToMany(() => Player, player => player.account)
+  @OneToMany(() => Player, (player) => player.account)
   players: Player[];
-
-  
 }

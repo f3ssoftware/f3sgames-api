@@ -5,13 +5,20 @@ services:
     image: postgres:14
     container_name: postgres_db
     environment:
-      POSTGRES_USER: dev_fernando
-      POSTGRES_PASSWORD: 428181Ab#
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: Hayasak1!.,.
       POSTGRES_DB: payment_db
     ports:
-      - "5432:5432"
+      - '5432:5432'
     volumes:
       - pgdata:/var/lib/postgresql/data
+      - ./initdb/postgres:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U dev_fernando -d payment_db']
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    network_mode: 'bridge'
 
   mariadb:
     image: mariadb:10.5
@@ -19,13 +26,29 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: sua_senha_root
       MYSQL_DATABASE: wkotserv_db
-      MYSQL_USER: benedicto
-      MYSQL_PASSWORD: 428181Ab#
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: Hayasak1!.,.
     ports:
-      - "3307:3306"
+      - '3307:3306'
     volumes:
       - mariadbdata:/var/lib/mysql
-      - ./initdb:/docker-entrypoint-initdb.d
+      - ./initdb/mariadb:/docker-entrypoint-initdb.d
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'mysqladmin',
+          'ping',
+          '-h',
+          'localhost',
+          '-u',
+          'benedicto',
+          '--password=428181Ab#',
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    network_mode: 'bridge'
 
 volumes:
   pgdata:
