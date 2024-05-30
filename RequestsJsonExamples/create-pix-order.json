@@ -1,0 +1,25 @@
+{
+  "player_id": 1,
+  "amount": 100,
+  "customer": {
+    "name": "Felipe S M Souza",
+    "email": "fmarques899@gmail.com",
+    "tax_id": "04718287189",
+    "phone": {
+      "country": "55",
+      "area": "61",
+      "number": "982638893",
+      "type": "mobile"
+    }
+  },
+  "address": {
+    "street": "CCSW 300B Bloco 4",
+    "number": "219",
+    "complement": "Edificio Diamond",
+    "locality": "BRASILIA",
+    "city": "BRASILIA",
+    "region_code": "DF",
+    "country": "BRA",
+    "postal_code": "70673083"
+  }
+}

@@ -25,8 +25,8 @@ export class PagseguroIntegrationService {
     } catch (err) {
       console.log(`${process.env.PAGBANK_API_URL}/orders`);
       console.log(JSON.stringify(createOrderDto));
-      // console.log(err.response.data);
-      throw new HttpException(err.response.data, 500, {
+      console.log(err);
+      throw new HttpException(err?.response?.data, 500, {
         description: 'Erro comunicação com PagSeguro',
       });
     }

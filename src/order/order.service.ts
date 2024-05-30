@@ -5,10 +5,11 @@ import { Order } from './order.entity';
 import { PlayerService } from '../players/player.service';
 import { PagseguroIntegrationService } from '../pagseguro-integration/services/pagseguro-integration.service';
 import { PagseguroCreateOrderPixDto } from '../pagseguro-integration/dto/pagseguro-create-order-pix.dto';
-import { PagseguroCreateOrderCreditCardDto } from '../pagseguro-integration/dto/pagseguro-create-order-creditcard.dto';
 
 import { PaymentMethodEnum } from './enums/payment-method.enum';
 import { OrderStatusEnum } from './enums/order-status.enum';
+import { GenerateOrderDto } from './dto/generate-order.dto';
+import { ProductsEnum } from './enums/products.enum';
 
 @Injectable()
 export class PaymentService {
@@ -20,7 +21,7 @@ export class PaymentService {
   ) {}
 
   async createOrder(
-    orderData: Partial<Order>,
+    orderData: GenerateOrderDto,
     paymentMethod: PaymentMethodEnum,
   ): Promise<Order> {
     const order = this.orderRepository.create({
@@ -34,22 +35,57 @@ export class PaymentService {
       case PaymentMethodEnum.PIX:
         {
           const pixOrderDto: PagseguroCreateOrderPixDto = {
-            ...orderData,
+            notification_urls: [`${process.env.API_URL}/webhook`],
+            items: [
+              {
+                name: ProductsEnum.TIBIA_COIN,
+                quantity: orderData.amount / 0.08,
+                unit_amount: 1,
+              },
+            ],
             reference_id: order.id,
-          } as PagseguroCreateOrderPixDto;
+            qr_codes: [
+              {
+                amount: {
+                  value: orderData.amount,
+                },
+              },
+            ],
+            customer: {
+              ...orderData.customer,
+              phones: [{ ...orderData.customer.phone }],
+            },
+            shipping: {
+              address: {
+                ...orderData.address,
+              },
+            },
+          };
           response =
             await this.pagseguroIntegrationService.createPixOrder(pixOrderDto);
         }
         break;
       case PaymentMethodEnum.CREDIT_CARD: {
-        const creditCardOrderDto: PagseguroCreateOrderCreditCardDto = {
-          ...orderData,
-          reference_id: order.id,
-        } as PagseguroCreateOrderCreditCardDto;
-        response =
-          await this.pagseguroIntegrationService.createCreditCardOrder(
-            creditCardOrderDto,
-          );
+        // const creditCardOrderDto: PagseguroCreateOrderCreditCardDto = {
+        //   charges: [
+        //     {
+        //       reference_id: order.id,
+        //       description: '',
+        //       amount: {
+        //         currency: 'BRL',
+        //         value: orderData.amount,
+        //       },
+        //       payment_method: {
+        //         type:
+        //       }
+        //     },
+        //   ],
+        //   reference_id: order.id,
+        // };
+        // response =
+        //   await this.pagseguroIntegrationService.createCreditCardOrder(
+        //     creditCardOrderDto,
+        //   );
       }
     }
 

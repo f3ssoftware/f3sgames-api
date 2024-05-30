@@ -24,7 +24,7 @@ export class Order {
     }[];
   };
 
-  @Column('jsonb')
+  @Column('jsonb', { nullable: true })
   items: {
     name: string;
     quantity: number;

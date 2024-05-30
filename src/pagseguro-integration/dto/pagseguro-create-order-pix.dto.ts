@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { PagseguroCreateOrderDto } from './pagseguro-create-order.dto';
 import {
   ValidateNested,
@@ -6,6 +6,7 @@ import {
   IsDateString,
   IsArray,
   ArrayNotEmpty,
+  IsOptional,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
@@ -20,9 +21,10 @@ class QRCode {
   @Type(() => Amount)
   amount!: Amount;
 
-  @ApiProperty({ description: 'Expiration date of the QR code' })
+  @ApiPropertyOptional({ description: 'Expiration date of the QR code' })
   @IsDateString()
-  expiration_date: string;
+  @IsOptional()
+  expiration_date?: string;
 }
 export class PagseguroCreateOrderPixDto extends PagseguroCreateOrderDto {
   @ApiProperty({
