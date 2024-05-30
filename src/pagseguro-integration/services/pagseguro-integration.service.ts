@@ -1,44 +1,46 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { PagseguroCreateOrderPixDto } from '../dto/pagseguro-create-order-pix.dto';
 import { PagseguroCreateOrderCreditCardDto } from '../dto/pagseguro-create-order-creditcard.dto';
 import axios from 'axios';
 
 @Injectable()
 export class PagseguroIntegrationService {
-  private readonly pagBankApiUrl: string;
-  private readonly pagBankApiToken: string;
-
-  constructor() {
-    this.pagBankApiUrl =
-      process.env.PAGBANK_API_URL || 'https://api.pagbank.uol.com.br';
-    this.pagBankApiToken = process.env.PAGBANK_API_TOKEN || '';
-  }
+  constructor() {}
 
   async createPixOrder(
     createOrderDto: PagseguroCreateOrderPixDto,
   ): Promise<any> {
-    const response = await axios.post(
-      `${this.pagBankApiUrl}/orders`,
-      createOrderDto,
-      {
-        headers: {
-          Authorization: `Bearer ${this.pagBankApiToken}`,
-          'Content-Type': 'application/json',
+    try {
+      const response = await axios.post(
+        `${process.env.PAGBANK_API_URL}/orders`,
+        createOrderDto,
+        {
+          headers: {
+            Authorization: `Bearer ${process.env.PAGBANK_API_TOKEN}`,
+            'Content-Type': 'application/json',
+          },
         },
-      },
-    );
-    return response.data;
+      );
+      return response.data;
+    } catch (err) {
+      console.log(`${process.env.PAGBANK_API_URL}/orders`);
+      console.log(JSON.stringify(createOrderDto));
+      // console.log(err.response.data);
+      throw new HttpException(err.response.data, 500, {
+        description: 'Erro comunicação com PagSeguro',
+      });
+    }
   }
 
   async createCreditCardOrder(
     createOrderDto: PagseguroCreateOrderCreditCardDto,
   ): Promise<any> {
     const response = await axios.post(
-      `${this.pagBankApiUrl}/orders`,
+      `${process.env.PAGBANK_API_URL}/orders`,
       createOrderDto,
       {
         headers: {
-          Authorization: `Bearer ${this.pagBankApiToken}`,
+          Authorization: `Bearer ${process.env.PAGBANK_API_TOKEN}`,
           'Content-Type': 'application/json',
         },
       },
@@ -48,10 +50,10 @@ export class PagseguroIntegrationService {
 
   async checkOrderStatus(referenceId: string): Promise<any> {
     const response = await axios.get(
-      `${this.pagBankApiUrl}/orders/${referenceId}`,
+      `${process.env.PAGBANK_API_URL}/orders/${referenceId}`,
       {
         headers: {
-          Authorization: `Bearer ${this.pagBankApiToken}`,
+          Authorization: `Bearer ${process.env.PAGBANK_API_TOKEN}`,
         },
       },
     );

@@ -1,12 +1,15 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+} from 'typeorm';
+import { OrderStatusEnum } from './enums/order-status.enum';
 
 @Entity()
 export class Order {
-  @PrimaryGeneratedColumn()
-  id: number;
-
-  @Column()
-  referenceId: string;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column('jsonb')
   customer: {
@@ -36,7 +39,7 @@ export class Order {
     expiration_date: string;
   }[];
 
-  @Column('jsonb')
+  @Column('jsonb', { nullable: true })
   shipping: {
     address: {
       street: string;
@@ -53,7 +56,7 @@ export class Order {
   @Column('jsonb', { nullable: true })
   notification_urls?: string[];
 
-  @Column('jsonb')
+  @Column('jsonb', { nullable: true })
   charges?: {
     reference_id: string;
     description: string;
@@ -102,7 +105,7 @@ export class Order {
     notification_urls: string[];
   }[];
 
-  @Column()
+  @Column({ enum: OrderStatusEnum })
   status: string;
 
   @CreateDateColumn()

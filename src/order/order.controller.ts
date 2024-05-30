@@ -27,7 +27,7 @@ export class PaymentController {
   }
 
   @Get(':id/status')
-  async checkOrderStatus(@Param('id') id: number) {
+  async checkOrderStatus(@Param('id') id: string) {
     return this.paymentService.checkOrderStatus(id);
   }
 
