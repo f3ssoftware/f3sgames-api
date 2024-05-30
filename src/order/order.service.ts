@@ -7,6 +7,7 @@ import { PagseguroIntegrationService } from '../pagseguro-integration/services/p
 import { PagseguroCreateOrderPixDto } from '../pagseguro-integration/dto/pagseguro-create-order-pix.dto';
 import { PagseguroCreateOrderCreditCardDto } from '../pagseguro-integration/dto/pagseguro-create-order-creditcard.dto';
 import { v4 as uuidv4 } from 'uuid';
+import { PaymentMethodEnum } from './enums/payment-method.enum';
 
 @Injectable()
 export class PaymentService {
@@ -17,24 +18,36 @@ export class PaymentService {
     private pagseguroIntegrationService: PagseguroIntegrationService,
   ) {}
 
-  async createOrder(orderData: Partial<Order>, paymentMethod: 'pix' | 'credit_card'): Promise<Order> {
+  async createOrder(
+    orderData: Partial<Order>,
+    paymentMethod: PaymentMethodEnum,
+  ): Promise<Order> {
     orderData.referenceId = uuidv4();
     const order = this.orderRepository.create(orderData);
     await this.orderRepository.save(order);
 
     let response;
-    if (paymentMethod === 'pix') {
-      const pixOrderDto: PagseguroCreateOrderPixDto = {
-        ...orderData,
-        reference_id: orderData.referenceId,
-      } as PagseguroCreateOrderPixDto;
-      response = await this.pagseguroIntegrationService.createPixOrder(pixOrderDto);
-    } else {
-      const creditCardOrderDto: PagseguroCreateOrderCreditCardDto = {
-        ...orderData,
-        reference_id: orderData.referenceId, 
-      } as PagseguroCreateOrderCreditCardDto;
-      response = await this.pagseguroIntegrationService.createCreditCardOrder(creditCardOrderDto);
+    switch (paymentMethod) {
+      case PaymentMethodEnum.PIX:
+        {
+          const pixOrderDto: PagseguroCreateOrderPixDto = {
+            ...orderData,
+            reference_id: orderData.referenceId,
+          } as PagseguroCreateOrderPixDto;
+          response =
+            await this.pagseguroIntegrationService.createPixOrder(pixOrderDto);
+        }
+        break;
+      case PaymentMethodEnum.CREDIT_CARD: {
+        const creditCardOrderDto: PagseguroCreateOrderCreditCardDto = {
+          ...orderData,
+          reference_id: orderData.referenceId,
+        } as PagseguroCreateOrderCreditCardDto;
+        response =
+          await this.pagseguroIntegrationService.createCreditCardOrder(
+            creditCardOrderDto,
+          );
+      }
     }
 
     order.status = response.status;
@@ -50,7 +63,9 @@ export class PaymentService {
     const order = await this.orderRepository.findOneBy({ id: orderId });
     if (!order) throw new NotFoundException('Order not found');
 
-    const response = await this.pagseguroIntegrationService.checkOrderStatus(order.referenceId);
+    const response = await this.pagseguroIntegrationService.checkOrderStatus(
+      order.referenceId,
+    );
     order.status = response.status;
     await this.orderRepository.save(order);
 
@@ -58,9 +73,14 @@ export class PaymentService {
   }
 
   async handlePaymentConfirmation(notificationData: any): Promise<void> {
-    const order = await this.orderRepository.findOneBy({ referenceId: notificationData.reference_id }); 
+    const order = await this.orderRepository.findOneBy({
+      referenceId: notificationData.reference_id,
+    });
     if (order && notificationData.status === 'APPROVED') {
-      await this.playerService.updateTransferableCoins(order.customer.name, order.items[0].quantity);
+      await this.playerService.updateTransferableCoins(
+        order.customer.name,
+        order.items[0].quantity,
+      );
     }
   }
 }
