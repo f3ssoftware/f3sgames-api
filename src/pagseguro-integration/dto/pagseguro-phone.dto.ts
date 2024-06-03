@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString } from 'class-validator';
+import { IsString, Matches } from 'class-validator';
 
 export class Phone {
   @ApiProperty()
@@ -11,7 +11,6 @@ export class Phone {
   area: string;
 
   @ApiProperty()
-  @IsString()
   number: string;
 
   @ApiProperty()

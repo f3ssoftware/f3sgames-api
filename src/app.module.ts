@@ -1,9 +1,11 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { PaymentModule } from './order/order.module'; // Certifique-se de que está importando o PaymentModule
+import { PaymentModule } from './order/order.module';
 import { PlayerModule } from './players/player.module';
 import { PagseguroIntegrationModule } from './pagseguro-integration/pagseguro-integration.module';
+import { Account } from './account/account.entity';
+import { Player } from './players/player.entity';
 
 @Module({
   imports: [
@@ -35,7 +37,7 @@ import { PagseguroIntegrationModule } from './pagseguro-integration/pagseguro-in
         username: configService.get<string>('GAME_DATABASE_USERNAME'),
         password: configService.get<string>('GAME_DATABASE_PASSWORD'),
         database: configService.get<string>('GAME_DATABASE_NAME'),
-        autoLoadEntities: false,
+        entities: [Player, Account],
         synchronize: false,
       }),
       inject: [ConfigService],

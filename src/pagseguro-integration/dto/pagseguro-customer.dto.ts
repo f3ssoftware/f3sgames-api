@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { IsNotEmpty, IsEmail, IsString, ValidateNested, Length } from 'class-validator';
 import { Type } from 'class-transformer';
-import { IsNotEmpty, IsEmail, IsString, ValidateNested } from 'class-validator';
 import { Phone } from './pagseguro-phone.dto';
 
 export class Customer {
@@ -10,6 +10,7 @@ export class Customer {
 
   @ApiProperty()
   @IsEmail()
+  @Length(5, 60)
   email: string;
 
   @ApiProperty()

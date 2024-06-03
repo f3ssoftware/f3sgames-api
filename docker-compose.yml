@@ -14,7 +14,7 @@ services:
       - pgdata:/var/lib/postgresql/data
       - ./initdb/postgres:/docker-entrypoint-initdb.d
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U dev_fernando -d payment_db']
+      test: ['CMD-SHELL', 'pg_isready -U admin -d payment_db']
       interval: 30s
       timeout: 10s
       retries: 5
@@ -24,7 +24,7 @@ services:
     image: mariadb:10.5
     container_name: mariadb_db
     environment:
-      MYSQL_ROOT_PASSWORD: sua_senha_root
+      MYSQL_ROOT_PASSWORD: 428181Ab
       MYSQL_DATABASE: wkotserv_db
       MYSQL_USER: admin
       MYSQL_PASSWORD: Hayasak1!.,.
@@ -42,8 +42,8 @@ services:
           '-h',
           'localhost',
           '-u',
-          'benedicto',
-          '--password=428181Ab#',
+          'admin',
+          '--password=Hayasak1!.,.',
         ]
       interval: 30s
       timeout: 10s

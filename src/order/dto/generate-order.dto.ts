@@ -6,6 +6,9 @@ import {
   IsString,
   Min,
   ValidateNested,
+  IsNumber,
+  Matches,
+  Length,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
@@ -23,6 +26,9 @@ class Phone {
   @ApiProperty({ example: '982638893' })
   @IsString()
   @IsNotEmpty()
+  @Matches(/^[0-9]{8,9}$/, {
+    message: 'Phone number must be between 10000000 and 999999999',
+  })
   number: string;
 
   @ApiProperty({ example: 'mobile' })
@@ -39,6 +45,7 @@ class Customer {
 
   @ApiProperty({ example: 'fmarques899@gmail.com' })
   @IsEmail()
+  @Length(5, 60)
   email: string;
 
   @ApiProperty({ example: '04718287189' })

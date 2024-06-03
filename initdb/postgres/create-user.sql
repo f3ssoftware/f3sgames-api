@@ -1,0 +1,2 @@
+CREATE ROLE dev_fernando WITH LOGIN PASSWORD '428181Ab';
+GRANT ALL PRIVILEGES ON DATABASE payment_db TO dev_fernando;
