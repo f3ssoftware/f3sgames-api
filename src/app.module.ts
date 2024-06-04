@@ -38,7 +38,7 @@ import { Player } from './players/player.entity';
         password: configService.get<string>('GAME_DATABASE_PASSWORD'),
         database: configService.get<string>('GAME_DATABASE_NAME'),
         entities: [Player, Account],
-        synchronize: false,
+        synchronize: true,
       }),
       inject: [ConfigService],
     }),

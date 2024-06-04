@@ -24,7 +24,7 @@ services:
     image: mariadb:10.5
     container_name: mariadb_db
     environment:
-      MYSQL_ROOT_PASSWORD: 428181Ab
+      MYSQL_ROOT_PASSWORD: sua_senha_root
       MYSQL_DATABASE: wkotserv_db
       MYSQL_USER: admin
       MYSQL_PASSWORD: Hayasak1!.,.
