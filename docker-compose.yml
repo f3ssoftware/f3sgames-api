@@ -23,7 +23,8 @@ services:
     depends_on:
       - postgres
       - mariadb
-    network_mode: 'bridge'
+    networks:
+      - f3sgames-network
 
   postgres:
     image: postgres:14
@@ -42,7 +43,8 @@ services:
       interval: 30s
       timeout: 10s
       retries: 5
-    network_mode: 'bridge'
+    networks:
+      - f3sgames-network
 
   mariadb:
     image: mariadb:10.5
@@ -72,37 +74,12 @@ services:
       interval: 30s
       timeout: 10s
       retries: 5
-    network_mode: 'bridge'
+    networks:
+      - f3sgames-network
 
-  # mariadb:
-  #   image: mariadb:10.5
-  #   container_name: mariadb_db
-  #   environment:
-  #     MYSQL_ROOT_PASSWORD: sua_senha_root
-  #     MYSQL_DATABASE: wkotserv_db
-  #     MYSQL_USER: benedicto
-  #     MYSQL_PASSWORD: 428181Abc
-  #   ports:
-  #     - '3307:3306'
-  #   volumes:
-  #     - mariadbdata:/var/lib/mysql
-  #     - ./initdb/mariadb:/docker-entrypoint-initdb.d
-  #   healthcheck:
-  #     test:
-  #       [
-  #         'CMD',
-  #         'mysqladmin',
-  #         'ping',
-  #         '-h',
-  #         'localhost',
-  #         '-u',
-  #         'benedicto',
-  #         '--password=428181Abc',
-  #       ]
-  #     interval: 30s
-  #     timeout: 10s
-  #     retries: 5
-  #   network_mode: 'bridge'
+networks:
+  f3sgames-network:
+    driver: bridge
 
 volumes:
   pgdata:
