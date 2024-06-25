@@ -79,9 +79,9 @@ services:
   #   networks:
   #     - f3sgames-network
 
-networks:
-  f3sgames-network:
-    driver: bridge
+# networks:
+#   f3sgames-network:
+#     driver: bridge
 
 volumes:
   pgdata:
