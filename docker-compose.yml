@@ -22,7 +22,7 @@ services:
       - API_URL=${API_URL}
     depends_on:
       - postgres
-      - mariadb
+      # - mariadb
     networks:
       - f3sgames-network
 
