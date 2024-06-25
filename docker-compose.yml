@@ -4,8 +4,8 @@ services:
   nestjs-api:
     build: .
     container_name: nestjs_api
-    ports:
-      - '3000:3000'
+    # ports:
+    #   - '3000:3000'
     environment:
       - PAGBANK_API_URL=${PAGBANK_API_URL}
       - PAGBANK_API_TOKEN=${PAGBANK_API_TOKEN}
@@ -34,8 +34,8 @@ services:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: Hayasak1!.,.
       POSTGRES_DB: payment_db
-    ports:
-      - '5432:5432'
+    # ports:
+    #   - '5432:5432'
     volumes:
       - pgdata:/var/lib/postgresql/data
       - ./initdb/postgres:/docker-entrypoint-initdb.d
