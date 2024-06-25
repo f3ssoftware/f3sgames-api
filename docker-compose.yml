@@ -23,8 +23,9 @@ services:
     depends_on:
       - postgres
       # - mariadb
-    networks:
-      - f3sgames-network
+    # networks:
+    #   - f3sgames-network
+    network_mode: host
 
   postgres:
     image: postgres:14
@@ -43,8 +44,9 @@ services:
       interval: 30s
       timeout: 10s
       retries: 5
-    networks:
-      - f3sgames-network
+    network_mode: host
+    # networks:
+    #   - f3sgames-network
 
   # mariadb:
   #   image: mariadb:10.5
