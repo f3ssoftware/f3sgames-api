@@ -12,7 +12,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.enableCors({
-    origin: 'http://localhost:3001', //'*' se for permitir todas as origens
+    origin: '*', //'*' se for permitir todas as origens
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   });
@@ -28,11 +28,13 @@ async function bootstrap() {
   SwaggerModule.setup('docs', app, document);
 
   // Apply global validation pipe
-  app.useGlobalPipes(new ValidationPipe({
-    whitelist: true,
-    forbidNonWhitelisted: true,
-    transform: true,
-  }));
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+    }),
+  );
 
   // Apply global exception filter
   app.useGlobalFilters(new AllExceptionsFilter());
