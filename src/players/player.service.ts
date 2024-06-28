@@ -3,6 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Player } from './player.entity';
 import { CreatePlayerDto } from './dto/create-player.dto';
+import { plainToClass } from 'class-transformer';
+import { PlayerDto } from './dto/player.dto';
 
 @Injectable()
 export class PlayerService {
@@ -11,14 +13,14 @@ export class PlayerService {
     private playerRepository: Repository<Player>,
   ) {}
 
-  async findByPlayerName(name: string): Promise<Player | undefined> {
+  async findByPlayerName(name: string): Promise<PlayerDto | undefined> {
     console.log(`Searching for player with name: ${name}`);
     const player = await this.playerRepository.findOne({
       where: { name },
       relations: ['account'],
     });
     console.log(`Player found: ${JSON.stringify(player, null, 2)}`);
-    return player;
+    return player ? plainToClass(PlayerDto, player, { excludeExtraneousValues: true }) : undefined;
   }
 
   async createPlayer(createPlayerDto: CreatePlayerDto): Promise<Player> {
@@ -43,7 +45,10 @@ export class PlayerService {
   }
 
   async updateTransferableCoins(name: string, coins: number): Promise<Player> {
-    const player = await this.findByPlayerName(name);
+    const player = await this.playerRepository.findOne({
+      where: { name },
+      relations: ['account'],
+    });
     if (!player) throw new NotFoundException('Player not found');
 
     player.account.coinsTransferable += coins;
