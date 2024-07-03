@@ -9,8 +9,11 @@ import {
   IsNumber,
   Matches,
   Length,
+  IsOptional,
 } from 'class-validator';
 import { Type } from 'class-transformer';
+import { Card } from 'src/pagseguro-integration/dto/pagseguro-card.dto';
+import { Address } from 'src/pagseguro-integration/dto/pagseguro-address.dto';
 
 class Phone {
   @ApiProperty({ example: '55' })
@@ -53,45 +56,10 @@ class Customer {
   @IsNotEmpty()
   tax_id: string;
 
-  @ApiProperty({ type: Phone })
-  @ValidateNested()
+  @ApiProperty({ type: [Phone] })
+  @ValidateNested({ each: true })
   @Type(() => Phone)
-  phone: Phone;
-}
-
-class Address {
-  @ApiProperty({ example: 'CCSW 300B Bloco 4' })
-  @IsString()
-  street: string;
-
-  @ApiProperty({ example: '219' })
-  @IsString()
-  number: string;
-
-  @ApiProperty({ example: 'Edificio Diamond' })
-  @IsString()
-  complement: string;
-
-  @ApiProperty({ example: 'BRASILIA' })
-  @IsString()
-  locality: string;
-
-  @ApiProperty({ example: 'BRASILIA' })
-  @IsString()
-  city: string;
-
-  @ApiProperty({ example: 'DF' })
-  @IsString()
-  region_code: string;
-
-  @ApiProperty({ example: 'BRA' })
-  @IsString()
-  country: string;
-
-  @ApiProperty({ example: '70673083' })
-  @IsString()
-  @IsNotEmpty()
-  postal_code: string;
+  phones: Phone[];
 }
 
 export class GenerateOrderDto {
@@ -114,4 +82,10 @@ export class GenerateOrderDto {
   @ValidateNested()
   @Type(() => Address)
   address: Address;
+
+  @ApiProperty({ type: Card })
+  @ValidateNested()
+  @IsOptional()
+  @Type(() => Card)
+  card?: Card;
 }

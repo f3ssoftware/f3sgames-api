@@ -9,7 +9,7 @@ import { Order } from './order.entity';
 @Module({
   imports: [
     TypeOrmModule.forFeature([Order], 'paymentConnection'),
-    PlayerModule, // Adicione o PlayerModule aqui
+    PlayerModule,
     PagseguroIntegrationModule,
   ],
   providers: [PaymentService],

@@ -1,36 +1,43 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString } from 'class-validator';
+import { IsString, IsNotEmpty } from 'class-validator';
 
 export class Address {
-  @ApiProperty()
+  @ApiProperty({ example: 'CCSW 300B Bloco 4' })
   @IsString()
+  @IsNotEmpty()
   street: string;
 
-  @ApiProperty()
+  @ApiProperty({ example: '219' })
   @IsString()
+  @IsNotEmpty()
   number: string;
 
-  @ApiProperty()
+  @ApiProperty({ example: 'Edificio Diamond' })
   @IsString()
   complement: string;
 
-  @ApiProperty()
+  @ApiProperty({ example: 'BRASILIA' })
   @IsString()
+  @IsNotEmpty()
   locality: string;
 
-  @ApiProperty()
+  @ApiProperty({ example: 'BRASILIA' })
   @IsString()
+  @IsNotEmpty()
   city: string;
 
-  @ApiProperty()
+  @ApiProperty({ example: 'DF' })
   @IsString()
+  @IsNotEmpty()
   region_code: string;
 
-  @ApiProperty()
+  @ApiProperty({ example: 'BRA' })
   @IsString()
+  @IsNotEmpty()
   country: string;
 
-  @ApiProperty()
+  @ApiProperty({ example: '70673083' })
   @IsString()
+  @IsNotEmpty()
   postal_code: string;
 }

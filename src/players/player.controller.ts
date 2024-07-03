@@ -2,7 +2,7 @@ import { Controller, Param, Patch, Body, Get, Post, NotFoundException } from '@n
 import { PlayerService } from './player.service';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody } from '@nestjs/swagger';
 import { CreatePlayerDto } from './dto/create-player.dto';
-import { PlayerDto } from './dto/player.dto';
+import { Player } from './player.entity';
 
 @ApiTags('players')
 @Controller('players')
@@ -24,7 +24,7 @@ export class PlayerController {
   @ApiResponse({ status: 200, description: 'Player found.' })
   @ApiResponse({ status: 404, description: 'Player not found.' })
   @ApiParam({ name: 'name', required: true, description: 'Player name' })
-  async getPlayerByName(@Param('name') name: string): Promise<PlayerDto> {
+  async getPlayerByName(@Param('name') name: string): Promise<Player> {
     const player = await this.playerService.findByPlayerName(name);
     if (!player) {
       throw new NotFoundException('Player not found');

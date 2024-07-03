@@ -1,19 +1,24 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, Matches } from 'class-validator';
+import { IsString, IsNotEmpty } from 'class-validator';
 
 export class Phone {
   @ApiProperty()
   @IsString()
+  @IsNotEmpty()
+  type: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
   country: string;
 
   @ApiProperty()
   @IsString()
+  @IsNotEmpty()
   area: string;
 
   @ApiProperty()
-  number: string;
-
-  @ApiProperty()
   @IsString()
-  type: string;
+  @IsNotEmpty()
+  number: string;
 }

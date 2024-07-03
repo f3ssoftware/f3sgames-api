@@ -1,23 +1,27 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsEmail, IsString, ValidateNested, Length } from 'class-validator';
+import { IsString, IsNotEmpty, ValidateNested, IsArray, ArrayNotEmpty } from 'class-validator';
 import { Type } from 'class-transformer';
 import { Phone } from './pagseguro-phone.dto';
 
 export class Customer {
   @ApiProperty()
+  @IsString()
   @IsNotEmpty()
   name: string;
 
   @ApiProperty()
-  @IsEmail()
-  @Length(5, 60)
+  @IsString()
+  @IsNotEmpty()
   email: string;
 
   @ApiProperty()
   @IsString()
+  @IsNotEmpty()
   tax_id: string;
 
-  @ApiProperty({ type: [Phone] })
+  @ApiProperty()
+  @IsArray()
+  @ArrayNotEmpty()
   @ValidateNested({ each: true })
   @Type(() => Phone)
   phones: Phone[];

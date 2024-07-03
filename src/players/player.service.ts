@@ -4,7 +4,6 @@ import { Repository } from 'typeorm';
 import { Player } from './player.entity';
 import { CreatePlayerDto } from './dto/create-player.dto';
 import { plainToClass } from 'class-transformer';
-import { PlayerDto } from './dto/player.dto';
 
 @Injectable()
 export class PlayerService {
@@ -13,14 +12,17 @@ export class PlayerService {
     private playerRepository: Repository<Player>,
   ) {}
 
-  async findByPlayerName(name: string): Promise<PlayerDto | undefined> {
+  async findByPlayerName(name: string): Promise<Player | undefined> {
     console.log(`Searching for player with name: ${name}`);
     const player = await this.playerRepository.findOne({
       where: { name },
       relations: ['account'],
     });
     console.log(`Player found: ${JSON.stringify(player, null, 2)}`);
-    return player ? plainToClass(PlayerDto, player, { excludeExtraneousValues: true }) : undefined;
+    if (player) {
+      player.account = null;
+    }
+    return player;
   }
 
   async createPlayer(createPlayerDto: CreatePlayerDto): Promise<Player> {
@@ -41,6 +43,9 @@ export class PlayerService {
       relations: ['account'],
     });
     console.log('Player found by ID:', player);
+    if (player) {
+      player.account = null;
+    }
     return player;
   }
 

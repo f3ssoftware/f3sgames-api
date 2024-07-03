@@ -1,51 +1,43 @@
-import { PagseguroCreateOrderDto } from './pagseguro-create-order.dto';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsString, IsArray, ArrayNotEmpty, ValidateNested } from 'class-validator';
+import { Type } from 'class-transformer';
+import { Customer } from './pagseguro-customer.dto';
+import { Item } from './pagseguro-item.dto';
+import { Shipping } from './pagseguro-shipping.dto';
+import { Charge } from './pagseguro-charge.dto';
 
-export class PagseguroCreateOrderCreditCardDto extends PagseguroCreateOrderDto {
-  charges!: {
-    reference_id: string;
-    description: string;
-    amount: {
-      value: number;
-      currency: string;
-    };
-    payment_method: {
-      type: string;
-      installments: number;
-      capture: boolean;
-      soft_descriptor: string;
-      card: {
-        number: string;
-        exp_month: string;
-        exp_year: string;
-        security_code: string;
-        holder: {
-          name: string;
-          tax_id: string;
-        };
-      };
-    };
-    sub_merchant: {
-      reference_id: string;
-      name: string;
-      tax_id: string;
-      mcc: string;
-      address: {
-        country: string;
-        region_code: string;
-        city: string;
-        postal_code: string;
-        street: string;
-        number: string;
-        locality: string;
-        complement: string;
-      };
-      phones: {
-        country: string;
-        area: string;
-        number: string;
-        type: string;
-      }[];
-    };
-    notification_urls: string[];
-  }[];
+export class PagseguroCreateOrderCreditCardDto {
+  @ApiProperty()
+  @IsString()
+  reference_id: string;
+
+  @ApiProperty()
+  @ValidateNested()
+  @Type(() => Customer)
+  customer: Customer;
+
+  @ApiProperty()
+  @IsArray()
+  @ArrayNotEmpty()
+  @ValidateNested({ each: true })
+  @Type(() => Item)
+  items: Item[];
+
+  @ApiProperty()
+  @ValidateNested()
+  @Type(() => Shipping)
+  shipping: Shipping;
+
+  @ApiProperty()
+  @IsArray()
+  @ArrayNotEmpty()
+  @ValidateNested({ each: true })
+  @Type(() => Charge)
+  charges: Charge[];
+
+  @ApiProperty()
+  @IsArray()
+  @ArrayNotEmpty()
+  @IsString({ each: true })
+  notification_urls: string[];
 }
