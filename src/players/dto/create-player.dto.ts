@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber, IsString, IsOptional } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class CreatePlayerDto {
   @IsNotEmpty()
@@ -7,37 +7,13 @@ export class CreatePlayerDto {
 
   @IsNotEmpty()
   @IsNumber()
-  group_id: number;
-
-  @IsNotEmpty()
-  @IsNumber()
-  account_id: number;
-
-  @IsNotEmpty()
-  @IsNumber()
-  level: number;
-
-  @IsNotEmpty()
-  @IsNumber()
   vocation: number;
 
   @IsNotEmpty()
   @IsNumber()
-  health: number;
-
-  @IsNotEmpty()
-  @IsNumber()
-  healthmax: number;
-
-  @IsNotEmpty()
-  @IsNumber()
-  experience: number;
+  sex: number;
 
   @IsNotEmpty()
   @IsNumber()
   town_id: number;
-
-  @IsOptional()
-  @IsString()
-  conditions?: string;
 }
