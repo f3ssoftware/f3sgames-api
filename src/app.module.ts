@@ -6,7 +6,7 @@ import { PlayerModule } from './players/player.module';
 import { PagseguroIntegrationModule } from './pagseguro-integration/pagseguro-integration.module';
 import { Account } from './account/account.entity';
 import { Player } from './players/player.entity';
-
+import { HighscoresModule } from './highscores/highscores.module'; 
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -53,6 +53,7 @@ import { Player } from './players/player.entity';
     PaymentModule,
     PlayerModule,
     PagseguroIntegrationModule,
+    HighscoresModule, // Adicionando o módulo de highscores
   ],
 })
 export class AppModule {}
