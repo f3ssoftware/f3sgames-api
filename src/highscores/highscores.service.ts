@@ -18,29 +18,22 @@ export class HighscoresService {
 
     switch (vocation) {
       case Vocation.Sorcerer:
-      case Vocation.MasterSorcerer:
         return [Vocation.Sorcerer, Vocation.MasterSorcerer];
       case Vocation.Druid:
-      case Vocation.ElderDruid:
         return [Vocation.Druid, Vocation.ElderDruid];
       case Vocation.Paladin:
-      case Vocation.RoyalPaladin:
         return [Vocation.Paladin, Vocation.RoyalPaladin];
       case Vocation.Knight:
-      case Vocation.EliteKnight:
         return [Vocation.Knight, Vocation.EliteKnight];
       default:
         return [vocation];
     }
   }
 
-  async getHighscores(category: string, vocation: number | 'All', limit: number): Promise<Player[]> {
+  async getHighscores(category: string, vocation: number | 'All', limit: number): Promise<{ rank: number, name: string, vocation: string, level: number, skillLevel: number }[]> {
     let orderField: keyof Player;
 
     switch (category) {
-      case 'level':
-        orderField = 'level';
-        break;
       case 'experience':
         orderField = 'experience';
         break;
@@ -82,9 +75,17 @@ export class HighscoresService {
       queryBuilder.where('player.vocation IN (:...vocations)', { vocations });
     }
 
-    return queryBuilder
+    const players = await queryBuilder
       .orderBy(`player.${orderField}`, 'DESC')
       .limit(limit)
       .getMany();
+
+    return players.map((player, index) => ({
+      rank: index + 1,
+      name: player.name,
+      vocation: Vocation[player.vocation],
+      level: player.level,
+      skillLevel: player[orderField]
+    }));
   }
 }

@@ -1,8 +1,7 @@
 import { Controller, Get, Query, UsePipes, ValidationPipe } from '@nestjs/common';
 import { HighscoresService } from './highscores.service';
-import { Player } from '../players/player.entity';
 import { ApiTags, ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
-import { Vocation } from '../players/enums/vocations.enum';
+import { Vocation } from 'src/players/enums/vocations.enum';
 
 @ApiTags('highscores')
 @Controller('highscores')
@@ -19,7 +18,7 @@ export class HighscoresController {
     @Query('category') category: string,
     @Query('vocation') vocation: string = 'All',
     @Query('limit') limit: number = 10,
-  ): Promise<Player[]> {
+  ): Promise<{ name: string }[]> {
     if (limit < 10) {
       limit = 10;
     } else if (limit > 1000) {

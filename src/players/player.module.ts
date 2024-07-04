@@ -12,5 +12,6 @@ import { AccountModule } from '../account/account.module';
   ],
   controllers: [PlayerController],
   providers: [PlayerService],
+  exports: [PlayerService],
 })
 export class PlayerModule {}
