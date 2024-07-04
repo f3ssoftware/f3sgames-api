@@ -6,6 +6,7 @@ import { PlayerModule } from './players/player.module';
 import { PagseguroIntegrationModule } from './pagseguro-integration/pagseguro-integration.module';
 import { Account } from './account/account.entity';
 import { Player } from './players/player.entity';
+import { AccountModule } from './account/account.module';
 
 @Module({
   imports: [
@@ -53,6 +54,7 @@ import { Player } from './players/player.entity';
     PaymentModule,
     PlayerModule,
     PagseguroIntegrationModule,
+    AccountModule,
   ],
 })
 export class AppModule {}

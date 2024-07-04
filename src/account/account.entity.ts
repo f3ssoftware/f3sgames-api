@@ -1,6 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, BeforeInsert } from 'typeorm';
 import { Player } from '../players/player.entity';
-
+import {hashSync} from 'bcrypt'
 @Entity({ name: 'accounts' })
 export class Account {
   @PrimaryGeneratedColumn()
@@ -30,12 +30,17 @@ export class Account {
   @Column({ name: 'tournament_coins' })
   tournamentCoins: number;
 
-  @Column({ name: 'creation' })
+  @Column({ name: 'creation' })//account create date
   creation: number;
 
-  @Column({ name: 'recruiter' })
+  @Column({ name: 'recruiter' })//zero
   recruiter: number;
 
   @OneToMany(() => Player, (player) => player.account)
   players: Player[];
+
+  @BeforeInsert()
+  hashPassword(){
+    this.password = hashSync(this.password, 10)
+  }
 }
