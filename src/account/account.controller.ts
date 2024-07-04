@@ -1,9 +1,11 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { AccountService } from './account.service';
 import { CreateAccountDto } from './dto/create-account';
 import { UpdateAccountDto } from './dto/update-account';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('account')
+@UseGuards(AuthGuard('jwt'))
 export class AccountController {
   constructor(private readonly accountService: AccountService) {}
 

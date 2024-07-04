@@ -7,6 +7,7 @@ import { PagseguroIntegrationModule } from './pagseguro-integration/pagseguro-in
 import { Account } from './account/account.entity';
 import { Player } from './players/player.entity';
 import { AccountModule } from './account/account.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -55,6 +56,7 @@ import { AccountModule } from './account/account.module';
     PlayerModule,
     PagseguroIntegrationModule,
     AccountModule,
+    AuthModule,
   ],
 })
 export class AppModule {}
