@@ -67,6 +67,8 @@ export class PlayerService {
     if (!player) throw new NotFoundException('Player not found');
 
     player.account.coinsTransferable += coins;
-    return this.playerRepository.save(player);
+    player.account.coins += coins;
+    await this.accountRepository.save(player.account);
+    return player;
   }
 }
