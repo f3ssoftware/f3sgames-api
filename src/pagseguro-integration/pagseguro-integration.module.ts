@@ -3,6 +3,6 @@ import { PagseguroIntegrationService } from './services/pagseguro-integration.se
 
 @Module({
   providers: [PagseguroIntegrationService],
-  controllers: [],
+  exports: [PagseguroIntegrationService],
 })
 export class PagseguroIntegrationModule {}

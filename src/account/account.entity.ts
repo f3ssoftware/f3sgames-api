@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 import { Player } from '../players/player.entity';
 
-@Entity()
+@Entity({ name: 'accounts' })
 export class Account {
   @PrimaryGeneratedColumn()
   id: number;
@@ -25,7 +25,7 @@ export class Account {
   coins: number;
 
   @Column({ name: 'coins_transferable' })
-  coinsTransferable: number; // Adicionando a propriedade coinsTransferable aqui
+  coinsTransferable: number;
 
   @Column({ name: 'tournament_coins' })
   tournamentCoins: number;
@@ -36,8 +36,6 @@ export class Account {
   @Column({ name: 'recruiter' })
   recruiter: number;
 
-  @OneToMany(() => Player, player => player.account)
+  @OneToMany(() => Player, (player) => player.account)
   players: Player[];
-
-  
 }

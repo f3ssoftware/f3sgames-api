@@ -1,7 +1,15 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
-import { Account } from '../account/account.entity'
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+  Unique,
+} from 'typeorm';
+import { Account } from '../account/account.entity';
 
-@Entity()
+@Entity({ name: 'players' })
+@Unique(['name'])
 export class Player {
   @PrimaryGeneratedColumn()
   id: number;
@@ -9,7 +17,16 @@ export class Player {
   @Column()
   name: string;
 
-  @ManyToOne(() => Account, account => account.players)
-  account: Account;
+  @Column()
+  vocation: number;
 
+  @Column()
+  sex: number;
+
+  @Column()
+  town_id: number;
+
+  @ManyToOne(() => Account, (account) => account.players)
+  @JoinColumn({ name: 'account_id' })
+  account: Account;
 }
