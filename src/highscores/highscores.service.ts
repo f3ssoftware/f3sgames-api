@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Player } from '../players/player.entity';
 import { Vocation } from '../players/enums/vocations.enum';
+import { Category } from './enum/category.enum';
 
 @Injectable()
 export class HighscoresService {
@@ -30,43 +31,8 @@ export class HighscoresService {
     }
   }
 
-  async getHighscores(category: string, vocation: number | 'All', limit: number): Promise<{ rank: number, name: string, vocation: string, level: number, skillLevel: number }[]> {
-    let orderField: keyof Player;
-
-    switch (category) {
-      case 'experience':
-        orderField = 'experience';
-        break;
-      case 'maglevel':
-        orderField = 'maglevel';
-        break;
-      case 'skill_fist':
-        orderField = 'skill_fist';
-        break;
-      case 'skill_club':
-        orderField = 'skill_club';
-        break;
-      case 'skill_sword':
-        orderField = 'skill_sword';
-        break;
-      case 'skill_axe':
-        orderField = 'skill_axe';
-        break;
-      case 'skill_dist':
-        orderField = 'skill_dist';
-        break;
-      case 'skill_shielding':
-        orderField = 'skill_shielding';
-        break;
-      case 'skill_fishing':
-        orderField = 'skill_fishing';
-        break;
-      case 'boss_points':
-        orderField = 'boss_points';
-        break;
-      default:
-        throw new Error('Invalid category');
-    }
+  async getHighscores(category: Category, vocation: number | 'All', limit: number): Promise<{ rank: number, name: string, vocation: string, level: number, skillLevel?: number, points?: number }[]> {
+    const orderField = category as keyof Player;
 
     const vocations = this.getVocations(vocation);
     const queryBuilder = this.playerRepository.createQueryBuilder('player');
@@ -80,12 +46,16 @@ export class HighscoresService {
       .limit(limit)
       .getMany();
 
-    return players.map((player, index) => ({
-      rank: index + 1,
-      name: player.name,
-      vocation: Vocation[player.vocation],
-      level: player.level,
-      skillLevel: player[orderField]
-    }));
+    return players.map((player, index) => {
+      const result: any = {
+        rank: index + 1,
+        name: player.name,
+        vocation: Vocation[player.vocation],
+        level: player.level,
+        skillLevel: player[orderField]
+      }
+      
+      return result;
+    });
   }
 }

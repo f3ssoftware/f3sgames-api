@@ -1,4 +1,5 @@
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsNotEmpty, IsEnum, IsNumber, IsString } from 'class-validator';
+import { Vocation } from '../enums/vocations.enum';
 
 export class CreatePlayerDto {
   @IsNotEmpty()
@@ -6,8 +7,8 @@ export class CreatePlayerDto {
   name: string;
 
   @IsNotEmpty()
-  @IsNumber()
-  vocation: number;
+  @IsEnum(Vocation)
+  vocation: Vocation;
 
   @IsNotEmpty()
   @IsNumber()
