@@ -5,8 +5,10 @@ import {
   ManyToOne,
   JoinColumn,
   Unique,
+  OneToOne,
 } from 'typeorm';
 import { Account } from '../account/account.entity';
+import { PlayersOnline } from 'src/players-online/entities/players-online.entity';
 
 @Entity({ name: 'players' })
 @Unique(['name'])
@@ -47,4 +49,7 @@ export class Player {
   @ManyToOne(() => Account, (account) => account.players)
   @JoinColumn({ name: 'account_id' })
   account: Account;
+
+  @OneToOne(() => PlayersOnline, (playersOnline) => playersOnline.player)
+  playersOnline: PlayersOnline;
 }
