@@ -19,7 +19,7 @@ async function bootstrap() {
     //   'http://donate.whitekingdomot.com',
     // ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    credentials: true,
+    credentials: false,
   });
 
   // Setup Swagger
