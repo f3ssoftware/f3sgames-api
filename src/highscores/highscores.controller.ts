@@ -2,6 +2,7 @@ import { Controller, Get, Query, UsePipes, ValidationPipe } from '@nestjs/common
 import { HighscoresService } from './highscores.service';
 import { ApiTags, ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
 import { Vocation } from 'src/players/enums/vocations.enum';
+import { Category } from './enum/category.enum';
 
 @ApiTags('highscores')
 @Controller('highscores')
@@ -10,15 +11,15 @@ export class HighscoresController {
 
   @Get()
   @ApiOperation({ summary: 'Get highscores' })
-  @ApiQuery({ name: 'category', required: true, type: String })
-  @ApiQuery({ name: 'vocation', required: false, type: String })
+  @ApiQuery({ name: 'category', required: true, enum: Category })
+  @ApiQuery({ name: 'vocation', required: false, enum: Vocation })
   @ApiQuery({ name: 'limit', required: false, type: Number })
   @ApiResponse({ status: 200, description: 'Highscores retrieved successfully.' })
   async getHighscores(
-    @Query('category') category: string,
+    @Query('category') category: Category,
     @Query('vocation') vocation: string = 'All',
     @Query('limit') limit: number = 10,
-  ): Promise<{ name: string }[]> {
+  ): Promise<{ rank: number, name: string, vocation: string, level: number, skillLevel?: number, points?: number }[]> {
     if (limit < 10) {
       limit = 10;
     } else if (limit > 1000) {

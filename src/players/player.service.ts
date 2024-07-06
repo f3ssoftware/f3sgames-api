@@ -1,4 +1,4 @@
-import { Injectable, ConflictException, NotFoundException } from '@nestjs/common';
+import { Injectable, ConflictException, NotFoundException, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Player } from './player.entity';
@@ -7,6 +7,9 @@ import { Account } from '../account/account.entity';
 
 @Injectable()
 export class PlayerService {
+
+  private readonly logger = new Logger(PlayerService.name);
+
   constructor(
     @InjectRepository(Player, 'gameConnection')
     private playerRepository: Repository<Player>,
@@ -15,7 +18,9 @@ export class PlayerService {
   ) {}
 
   async findByPlayerName(name: string): Promise<Player | undefined> {
-    console.log(`Searching for player with name: ${name}`);
+
+     this.logger.debug(`Searching for player with name: ${name}`);
+
     const player = await this.playerRepository.findOne({
       where: { name },
       relations: ['account'],
@@ -47,7 +52,9 @@ export class PlayerService {
   }
 
   async findByPlayerId(id: number): Promise<Player | undefined> {
-    console.log(`Searching for player with ID: ${id}`);
+
+    this.logger.debug(`Searching for player with ID: ${id}`);
+    
     const player = await this.playerRepository.findOne({
       where: { id },
       relations: ['account'],
