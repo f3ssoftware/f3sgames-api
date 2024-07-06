@@ -3,12 +3,15 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Player } from './player.entity';
 import { CreatePlayerDto } from './dto/create-player.dto';
+import { Account } from '../account/account.entity';
 
 @Injectable()
 export class PlayerService {
   constructor(
     @InjectRepository(Player, 'gameConnection')
     private playerRepository: Repository<Player>,
+    @InjectRepository(Account, 'gameConnection')
+    private accountRepository: Repository<Account>,
   ) {}
 
   async findByPlayerName(name: string): Promise<Player | undefined> {
@@ -17,18 +20,29 @@ export class PlayerService {
       where: { name },
       relations: ['account'],
     });
-    console.log(`Player found: ${JSON.stringify(player, null, 2)}`);
+
+    if (player) {
+      player.account = null;
+    }
     return player;
   }
 
-  async createPlayer(createPlayerDto: CreatePlayerDto): Promise<Player> {
-    console.log('Creating player:', createPlayerDto);
+  async createPlayer(createPlayerDto: CreatePlayerDto, accountId: number): Promise<Player> {
     const existingPlayer = await this.findByPlayerName(createPlayerDto.name);
     if (existingPlayer) {
       throw new ConflictException('Player with this name already exists');
     }
-    const newPlayer = this.playerRepository.create(createPlayerDto);
-    console.log('New player instance:', newPlayer);
+
+    const account = await this.accountRepository.findOne({ where: { id: accountId } });
+    if (!account) {
+      throw new NotFoundException('Account not found');
+    }
+
+    const newPlayer = this.playerRepository.create({
+      ...createPlayerDto,
+      account,
+    });
+
     return this.playerRepository.save(newPlayer);
   }
 
@@ -38,12 +52,18 @@ export class PlayerService {
       where: { id },
       relations: ['account'],
     });
-    console.log('Player found by ID:', player);
+
+    if (player) {
+      player.account = null;
+    }
     return player;
   }
 
   async updateTransferableCoins(name: string, coins: number): Promise<Player> {
-    const player = await this.findByPlayerName(name);
+    const player = await this.playerRepository.findOne({
+      where: { name },
+      relations: ['account'],
+    });
     if (!player) throw new NotFoundException('Player not found');
 
     player.account.coinsTransferable += coins;

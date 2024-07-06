@@ -1,7 +1,8 @@
-import { Controller, Param, Patch, Body, Get, Post, NotFoundException } from '@nestjs/common';
+import { Controller, Param, Patch, Body, Get, Post, NotFoundException, Req, UsePipes, ValidationPipe } from '@nestjs/common';
 import { PlayerService } from './player.service';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody } from '@nestjs/swagger';
 import { CreatePlayerDto } from './dto/create-player.dto';
+import { Player } from './player.entity';
 
 @ApiTags('players')
 @Controller('players')
@@ -23,7 +24,7 @@ export class PlayerController {
   @ApiResponse({ status: 200, description: 'Player found.' })
   @ApiResponse({ status: 404, description: 'Player not found.' })
   @ApiParam({ name: 'name', required: true, description: 'Player name' })
-  async getPlayerByName(@Param('name') name: string) {
+  async getPlayerByName(@Param('name') name: string): Promise<Player> {
     const player = await this.playerService.findByPlayerName(name);
     if (!player) {
       throw new NotFoundException('Player not found');
@@ -31,32 +32,29 @@ export class PlayerController {
     return player;
   }
 
-  @Post()
-@ApiOperation({ summary: 'Create a new player' })
-@ApiResponse({ status: 201, description: 'Player created successfully.' })
-@ApiResponse({ status: 404, description: 'Error creating player.' })
-@ApiBody({
-  type: CreatePlayerDto,
-  examples: {
-    example1: {
-      summary: 'Example request',
-      value: {
-        name: 'New Player',
-        group_id: 1,
-        account_id: 1,
-        level: 1,
-        vocation: 1,
-        health: 150,
-        healthmax: 150,
-        experience: 0,
-        town_id: 1,
-        conditions: ''
-      }
-    }
-  }
-})
-async createPlayer(@Body() createPlayerDto: CreatePlayerDto) {
-  return this.playerService.createPlayer(createPlayerDto);
-}
+// TODO: Integrate with passport
 
+  // @Post()
+  // @UsePipes(ValidationPipe)
+  // @ApiOperation({ summary: 'Create a new player' })
+  // @ApiResponse({ status: 201, description: 'Player created successfully.' })
+  // @ApiResponse({ status: 404, description: 'Error creating player.' })
+  // @ApiBody({
+  //   type: CreatePlayerDto,
+  //   examples: {
+  //     example1: {
+  //       summary: 'Example request',
+  //       value: {
+  //         name: 'New Player',
+  //         vocation: 1,
+  //         sex: 0,
+  //         town_id: 1,
+  //       },
+  //     },
+  //   },
+  // })
+  // async createPlayer(@Body() createPlayerDto: CreatePlayerDto, @Req() request): Promise<Player> {
+  //   const accountId = request.user.accountId; // Obtém o accountId da sessão do usuário, que há de ser implementado (JSON Web Token, Passport)
+  //   return this.playerService.createPlayer(createPlayerDto, accountId);
+  // }
 }
