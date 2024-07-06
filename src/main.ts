@@ -12,7 +12,11 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.enableCors({
-    origin: '*',
+    origin: [
+      'https://f3s-checkout.netlify.app/',
+      'https://donate.whitekingdomot.com',
+      'http://donate.whitekingdomot.com',
+    ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   });
