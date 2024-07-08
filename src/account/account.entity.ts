@@ -31,10 +31,10 @@ export class Account {
   @Column({ name: 'tournament_coins' })
   tournamentCoins: number;
 
-  @Column({ name: 'creation' })//account create date
+  @Column({ name: 'creation' })
   creation: number;
 
-  @Column({ name: 'recruiter' })//zero
+  @Column({ name: 'recruiter' })
   recruiter: number;
 
   @OneToMany(() => Player, (player) => player.account)
