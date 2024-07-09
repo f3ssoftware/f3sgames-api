@@ -6,6 +6,10 @@ import { PlayerModule } from './players/player.module';
 import { PagseguroIntegrationModule } from './pagseguro-integration/pagseguro-integration.module';
 import { Account } from './account/account.entity';
 import { Player } from './players/player.entity';
+import { AccountModule } from './account/account.module';
+import { AuthModule } from './auth/auth.module';
+import { PlayersOnlineModule } from './players-online/players-online.module';
+import { PlayersOnline } from './players-online/entities/players-online.entity';
 
 @Module({
   imports: [
@@ -42,7 +46,7 @@ import { Player } from './players/player.entity';
           username: configService.get<string>('GAME_DATABASE_USERNAME'),
           password: configService.get<string>('GAME_DATABASE_PASSWORD'),
           database: configService.get<string>('GAME_DATABASE_NAME'),
-          entities: [Player, Account],
+          entities: [Player, Account, PlayersOnline],
           synchronize: false,
         };
         console.log('Game Database Config:', gameConfig);
@@ -53,6 +57,9 @@ import { Player } from './players/player.entity';
     PaymentModule,
     PlayerModule,
     PagseguroIntegrationModule,
+    AccountModule,
+    AuthModule,
+    PlayersOnlineModule,
   ],
 })
 export class AppModule {}
