@@ -53,8 +53,13 @@ export class HighscoresService {
         vocation: Vocation[player.vocation],
         level: player.level,
         skillLevel: player[orderField]
+<<<<<<< HEAD
       }
       
+=======
+      };
+
+>>>>>>> master
       return result;
     });
   }

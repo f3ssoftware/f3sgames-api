@@ -13,8 +13,13 @@ async function bootstrap() {
 
   app.enableCors({
     origin: '*',
+    // origin: [
+    //   'https://f3s-checkout.netlify.app/',
+    //   'https://donate.whitekingdomot.com',
+    //   'http://donate.whitekingdomot.com',
+    // ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    credentials: true,
+    credentials: false,
   });
 
   // Setup Swagger
@@ -28,11 +33,13 @@ async function bootstrap() {
   SwaggerModule.setup('docs', app, document);
 
   // Apply global validation pipe
-  app.useGlobalPipes(new ValidationPipe({
-    whitelist: true,
-    forbidNonWhitelisted: true,
-    transform: true,
-  }));
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+    }),
+  );
 
   // Apply global exception filter
   app.useGlobalFilters(new AllExceptionsFilter());

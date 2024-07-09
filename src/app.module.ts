@@ -6,7 +6,12 @@ import { PlayerModule } from './players/player.module';
 import { PagseguroIntegrationModule } from './pagseguro-integration/pagseguro-integration.module';
 import { Account } from './account/account.entity';
 import { Player } from './players/player.entity';
-import { HighscoresModule } from './highscores/highscores.module'; 
+import { HighscoresModule } from './highscores/highscores.module';
+import { AccountModule } from './account/account.module';
+import { AuthModule } from './auth/auth.module';
+import { PlayersOnlineModule } from './players-online/players-online.module';
+import { PlayersOnline } from './players-online/entities/players-online.entity';
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -42,7 +47,7 @@ import { HighscoresModule } from './highscores/highscores.module';
           username: configService.get<string>('GAME_DATABASE_USERNAME'),
           password: configService.get<string>('GAME_DATABASE_PASSWORD'),
           database: configService.get<string>('GAME_DATABASE_NAME'),
-          entities: [Player, Account],
+          entities: [Player, Account, PlayersOnline],
           synchronize: false,
         };
         console.log('Game Database Config:', gameConfig);
@@ -53,7 +58,10 @@ import { HighscoresModule } from './highscores/highscores.module';
     PaymentModule,
     PlayerModule,
     PagseguroIntegrationModule,
-    HighscoresModule, // Adicionando o módulo de highscores
+    HighscoresModule,
+    AccountModule,
+    AuthModule,
+    PlayersOnlineModule,
   ],
 })
 export class AppModule {}

@@ -8,5 +8,5 @@ export enum Category {
   skill_dist = 'skill_dist',
   skill_shielding = 'skill_shielding',
   skill_fishing = 'skill_fishing',
-  boss_points = 'boss_points'
+  boss_points = 'boss_points',
 }
