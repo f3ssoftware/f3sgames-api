@@ -21,7 +21,7 @@ import { PlayersOnline } from './players-online/entities/players-online.entity';
       name: 'paymentConnection',
       imports: [ConfigModule],
       useFactory: (configService: ConfigService): TypeOrmModuleOptions => {
-        const paymentConfig: TypeOrmModuleOptions = {
+        return {
           type: 'postgres',
           host: configService.get<string>('DATABASE_HOST'),
           port: configService.get<number>('DATABASE_PORT'),
@@ -31,8 +31,6 @@ import { PlayersOnline } from './players-online/entities/players-online.entity';
           autoLoadEntities: true,
           synchronize: true,
         };
-        console.log('Payment Database Config:', paymentConfig);
-        return paymentConfig;
       },
       inject: [ConfigService],
     }),
@@ -40,7 +38,7 @@ import { PlayersOnline } from './players-online/entities/players-online.entity';
       name: 'gameConnection',
       imports: [ConfigModule],
       useFactory: (configService: ConfigService): TypeOrmModuleOptions => {
-        const gameConfig: TypeOrmModuleOptions = {
+        return {
           type: 'mariadb',
           host: configService.get<string>('GAME_DATABASE_HOST'),
           port: configService.get<number>('GAME_DATABASE_PORT'),
@@ -50,8 +48,6 @@ import { PlayersOnline } from './players-online/entities/players-online.entity';
           entities: [Player, Account, PlayersOnline],
           synchronize: false,
         };
-        console.log('Game Database Config:', gameConfig);
-        return gameConfig;
       },
       inject: [ConfigService],
     }),
