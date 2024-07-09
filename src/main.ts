@@ -21,6 +21,7 @@ async function bootstrap() {
     .setDescription('API for F3S Games services and applications')
     .setVersion('1.0')
     .addTag('f3sgames')
+    .addBearerAuth()  
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document);
