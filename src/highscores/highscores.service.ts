@@ -14,7 +14,9 @@ export class HighscoresService {
 
   private getVocations(vocation: number | 'All'): number[] {
     if (vocation === 'All') {
-      return Object.values(Vocation).filter(value => typeof value === 'number') as number[];
+      return Object.values(Vocation).filter(
+        (value) => typeof value === 'number',
+      ) as number[];
     }
 
     switch (vocation) {
@@ -31,7 +33,20 @@ export class HighscoresService {
     }
   }
 
-  async getHighscores(category: Category, vocation: number | 'All', limit: number): Promise<{ rank: number, name: string, vocation: string, level: number, skillLevel?: number, points?: number }[]> {
+  async getHighscores(
+    category: Category,
+    vocation: number | 'All',
+    limit: number,
+  ): Promise<
+    {
+      rank: number;
+      name: string;
+      vocation: string;
+      level: number;
+      skillLevel?: number;
+      points?: number;
+    }[]
+  > {
     const orderField = category as keyof Player;
 
     const vocations = this.getVocations(vocation);
@@ -52,14 +67,9 @@ export class HighscoresService {
         name: player.name,
         vocation: Vocation[player.vocation],
         level: player.level,
-        skillLevel: player[orderField]
-<<<<<<< HEAD
-      }
-      
-=======
+        skillLevel: player[orderField],
       };
 
->>>>>>> master
       return result;
     });
   }
