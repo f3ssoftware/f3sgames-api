@@ -4,8 +4,6 @@ services:
   nestjs-api:
     build: .
     container_name: nestjs_api
-    # ports:
-    #   - '3000:3000'
     environment:
       - PAGBANK_API_URL=${PAGBANK_API_URL}
       - PAGBANK_API_TOKEN=${PAGBANK_API_TOKEN}
@@ -22,9 +20,6 @@ services:
       - API_URL=${API_URL}
     depends_on:
       - postgres
-      # - mariadb
-    # networks:
-    #   - f3sgames-network
     network_mode: host
 
   postgres:
@@ -34,8 +29,7 @@ services:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: Hayasak1!.,.
       POSTGRES_DB: payment_db
-    # ports:
-    #   - '5432:5432'
+
     volumes:
       - pgdata:/var/lib/postgresql/data
       - ./initdb/postgres:/docker-entrypoint-initdb.d
@@ -45,43 +39,36 @@ services:
       timeout: 10s
       retries: 5
     network_mode: host
-    # networks:
-    #   - f3sgames-network
 
-  # mariadb:
-  #   image: mariadb:10.5
-  #   container_name: mariadb_db
-  #   environment:
-  #     MYSQL_ROOT_PASSWORD: sua_senha_root
-  #     MYSQL_DATABASE: wkotserv_db
-  #     MYSQL_USER: admin
-  #     MYSQL_PASSWORD: Hayasak1!.,.
-  #   ports:
-  #     - '3307:3306'
-  #   volumes:
-  #     - mariadbdata:/var/lib/mysql
-  #     - ./initdb/mariadb:/docker-entrypoint-initdb.d
-  #   healthcheck:
-  #     test:
-  #       [
-  #         'CMD',
-  #         'mysqladmin',
-  #         'ping',
-  #         '-h',
-  #         'localhost',
-  #         '-u',
-  #         'admin',
-  #         '--password=Hayasak1!.,.',
-  #       ]
-  #     interval: 30s
-  #     timeout: 10s
-  #     retries: 5
-  #   networks:
-  #     - f3sgames-network
-
-# networks:
-#   f3sgames-network:
-#     driver: bridge
+  mariadb:
+    image: mariadb:10.5
+    container_name: mariadb_db
+    environment:
+      MYSQL_ROOT_PASSWORD: sua_senha_root
+      MYSQL_DATABASE: wkotserv_db
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: Hayasak1!.,.
+    # ports:
+    #   - '3307:3306'
+    volumes:
+      - mariadbdata:/var/lib/mysql
+      - ./initdb/mariadb:/docker-entrypoint-initdb.d
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'mysqladmin',
+          'ping',
+          '-h',
+          'localhost',
+          '-u',
+          'admin',
+          '--password=Hayasak1!.,.',
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    network_mode: host
 
 volumes:
   pgdata:
