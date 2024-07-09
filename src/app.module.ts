@@ -7,6 +7,11 @@ import { PagseguroIntegrationModule } from './pagseguro-integration/pagseguro-in
 import { Account } from './account/account.entity';
 import { Player } from './players/player.entity';
 import { HighscoresModule } from './highscores/highscores.module'; 
+import { AccountModule } from './account/account.module';
+import { AuthModule } from './auth/auth.module';
+import { PlayersOnlineModule } from './players-online/players-online.module';
+import { PlayersOnline } from './players-online/entities/players-online.entity';
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -42,7 +47,7 @@ import { HighscoresModule } from './highscores/highscores.module';
           username: configService.get<string>('GAME_DATABASE_USERNAME'),
           password: configService.get<string>('GAME_DATABASE_PASSWORD'),
           database: configService.get<string>('GAME_DATABASE_NAME'),
-          entities: [Player, Account],
+          entities: [Player, Account, PlayersOnline],
           synchronize: false,
         };
         console.log('Game Database Config:', gameConfig);
@@ -53,7 +58,13 @@ import { HighscoresModule } from './highscores/highscores.module';
     PaymentModule,
     PlayerModule,
     PagseguroIntegrationModule,
+<<<<<<< HEAD
     HighscoresModule, // Adicionando o módulo de highscores
+=======
+    AccountModule,
+    AuthModule,
+    PlayersOnlineModule,
+>>>>>>> master
   ],
 })
 export class AppModule {}
