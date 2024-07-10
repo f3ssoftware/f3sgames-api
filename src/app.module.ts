@@ -31,11 +31,13 @@ import { NewsTickerModule } from './news-ticker/news-ticker.module';
           database: configService.get<string>('DATABASE_NAME'),
           autoLoadEntities: true,
           synchronize: true,
+          logging: true
         };
         console.log('Payment Database Config:', paymentConfig);
         return paymentConfig;
       },
       inject: [ConfigService],
+
     }),
     TypeOrmModule.forRootAsync({
       name: 'gameConnection',

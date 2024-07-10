@@ -5,7 +5,7 @@ import { UpdateAccountDto } from './dto/update-account';
 import { AuthGuard } from '@nestjs/passport';
 
 @Controller('account')
-@UseGuards(AuthGuard('jwt'))
+
 export class AccountController {
   constructor(private readonly accountService: AccountService) {}
 
@@ -15,16 +15,19 @@ export class AccountController {
   }
 
   @Get()
+  @UseGuards(AuthGuard('jwt'))
   async index(){
     return await this.accountService.findAll();
   }
 
   @Get(':id')
+  @UseGuards(AuthGuard('jwt'))
   async indexOf(@Param("id") id: number){
     return await this.accountService.findOneOrFail({where: {id}});
   }
 
   @Put(':id')
+  @UseGuards(AuthGuard('jwt'))
   async update(
     @Param("id") id: number,
     @Body() body: UpdateAccountDto,  
@@ -33,6 +36,7 @@ export class AccountController {
   }
 
   @Delete(':id')
+  @UseGuards(AuthGuard('jwt'))
   @HttpCode(HttpStatus.NO_CONTENT)
   async destroy(@Param("id") id: number){
     await this.accountService.destroy(id);
