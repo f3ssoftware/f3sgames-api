@@ -3,7 +3,7 @@ import { createConnection } from 'typeorm';
 import { Account } from './account.entity';
 import { Player } from '../players/player.entity';
 import { PlayersOnline } from '../players-online/entities/players-online.entity'; 
-import { hashSync } from 'bcrypt';
+import { hashSync } from 'bcryptjs';
 import * as dotenv from 'dotenv';
 
 dotenv.config();

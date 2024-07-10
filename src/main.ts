@@ -9,7 +9,9 @@ import * as cors from 'cors';
 dotenv.config();
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    logger: ['log', 'debug', 'error', 'warn'], 
+  });
 
   app.enableCors({
     origin: '*',
