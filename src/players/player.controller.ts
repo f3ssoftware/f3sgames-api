@@ -1,8 +1,9 @@
-import { Controller, Param, Patch, Body, Get, Post, NotFoundException, Req, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Controller, Param, Patch, Body, Get, Post, NotFoundException, Req, UsePipes, ValidationPipe, UseGuards } from '@nestjs/common';
 import { PlayerService } from './player.service';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody } from '@nestjs/swagger';
 import { CreatePlayerDto } from './dto/create-player.dto';
 import { Player } from './player.entity';
+import { AuthGuard } from '@nestjs/passport';
 
 @ApiTags('players')
 @Controller('players')
@@ -32,29 +33,28 @@ export class PlayerController {
     return player;
   }
 
-// TODO: Integrate with passport
-
-  // @Post()
-  // @UsePipes(ValidationPipe)
-  // @ApiOperation({ summary: 'Create a new player' })
-  // @ApiResponse({ status: 201, description: 'Player created successfully.' })
-  // @ApiResponse({ status: 404, description: 'Error creating player.' })
-  // @ApiBody({
-  //   type: CreatePlayerDto,
-  //   examples: {
-  //     example1: {
-  //       summary: 'Example request',
-  //       value: {
-  //         name: 'New Player',
-  //         vocation: 1,
-  //         sex: 0,
-  //         town_id: 1,
-  //       },
-  //     },
-  //   },
-  // })
-  // async createPlayer(@Body() createPlayerDto: CreatePlayerDto, @Req() request): Promise<Player> {
-  //   const accountId = request.user.accountId; // Obtém o accountId da sessão do usuário, que há de ser implementado (JSON Web Token, Passport)
-  //   return this.playerService.createPlayer(createPlayerDto, accountId);
-  // }
+  @UseGuards(AuthGuard('jwt'))
+  @Post()
+  @UsePipes(ValidationPipe)
+  @ApiOperation({ summary: 'Create a new player' })
+  @ApiResponse({ status: 201, description: 'Player created successfully.' })
+  @ApiResponse({ status: 404, description: 'Error creating player.' })
+  @ApiBody({
+    type: CreatePlayerDto,
+    examples: {
+      example1: {
+        summary: 'Example request',
+        value: {
+          name: 'New Player',
+          vocation: 1,
+          sex: 0,
+          town_id: 1,
+        },
+      },
+    },
+  })
+  async createPlayer(@Body() createPlayerDto: CreatePlayerDto, @Req() request): Promise<Player> {
+    const accountId = request.user.sub; 
+    return this.playerService.createPlayer(createPlayerDto, accountId);
+  }
 }
