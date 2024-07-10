@@ -11,17 +11,16 @@ dotenv.config();
 async function updatePassword() {
   const connection = await createConnection({
     type: 'mysql',
-    host: 'localhost', // altere de mariadb_db para localhost
+    host: 'localhost',
     port: Number(process.env.GAME_DATABASE_PORT),
     username: process.env.GAME_DATABASE_USERNAME,
     password: process.env.GAME_DATABASE_PASSWORD,
     database: process.env.GAME_DATABASE_NAME,
-    entities: [Account, Player, PlayersOnline], // Certifique-se de incluir todas as entidades
+    entities: [Account, Player, PlayersOnline], 
   });
 
   const accountRepository = connection.getRepository(Account);
 
-  // Substitua pelo ID da conta que deseja atualizar
   const accountId = 2;
   const newPassword = '428181Abc#';
 
