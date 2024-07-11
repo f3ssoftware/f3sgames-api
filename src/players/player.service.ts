@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { Player } from './player.entity';
 import { CreatePlayerDto } from './dto/create-player.dto';
 import { Account } from '../account/account.entity';
+import { PlayerResponseDto } from './dto/player-response.dto';
 
 @Injectable()
 export class PlayerService {
@@ -33,26 +34,29 @@ export class PlayerService {
     return player;
   }
 
-  async createPlayer(createPlayerDto: CreatePlayerDto, accountId: number): Promise<Player> {
+  async createPlayer(createPlayerDto: CreatePlayerDto, accountId: number): Promise<PlayerResponseDto> {
     const existingPlayer = await this.findByPlayerName(createPlayerDto.name);
     if (existingPlayer) {
       throw new ConflictException('Player with this name already exists');
     }
-
+  
     const account = await this.accountRepository.findOne({ where: { id: accountId } });
     if (!account) {
       throw new NotFoundException('Account not found');
     }
-
+  
     const newPlayer = this.playerRepository.create({
       ...createPlayerDto,
       account,
     });
-
+  
     const savedPlayer = await this.playerRepository.save(newPlayer);
+  
     this.logger.debug(`Player ${savedPlayer.name} created successfully`);
-    return savedPlayer;
+  
+    return new PlayerResponseDto(savedPlayer);
   }
+  
 
   async findAllByAccountId(accountId: number): Promise<Partial<Player>[]> {
     this.logger.debug(`Listing players for account id: ${accountId}`);
@@ -81,16 +85,17 @@ export class PlayerService {
     return player;
   }
 
-  async updateTransferableCoins(name: string, coins: number): Promise<Player> {
+  async updateTransferableCoins(name: string, coins: number): Promise<PlayerResponseDto> {
     const player = await this.playerRepository.findOne({
       where: { name },
       relations: ['account'],
     });
     if (!player) throw new NotFoundException('Player not found');
-
+  
     player.account.coinsTransferable += coins;
     player.account.coins += coins;
     await this.accountRepository.save(player.account);
-    return player;
+  
+    return new PlayerResponseDto(player);
   }
 }
