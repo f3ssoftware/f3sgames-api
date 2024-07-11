@@ -1,26 +1,45 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateNewsTickerDto } from './dto/create-news-ticker.dto';
 import { UpdateNewsTickerDto } from './dto/update-news-ticker.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { NewsTicker } from './entities/news-ticker.entity';
+import { FindOneOptions, Repository } from 'typeorm';
 
 @Injectable()
 export class NewsTickerService {
-  create(createNewsTickerDto: CreateNewsTickerDto) {
-    return 'This action adds a new newsTicker';
+  constructor(
+    @InjectRepository(NewsTicker, 'paymentConnection')
+    private newsTickerRepository: Repository<NewsTicker>) {}
+
+
+  async create(newsTickerData: CreateNewsTickerDto) {
+    const newsTicker = await this.newsTickerRepository.create(newsTickerData);   
+    return await this.newsTickerRepository.save(newsTicker);
   }
 
-  findAll() {
-    return `This action returns all newsTicker`;
+  async findAll() {
+    return await this.newsTickerRepository.find({
+      select:['id', 'createdAt', 'title', 'author', 'description']
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} newsTicker`;
+  async findOne(options: FindOneOptions<NewsTicker>) {
+    try {
+        return await this.newsTickerRepository.findOneOrFail(options);
+    }catch(error){
+      throw new NotFoundException(error.message);
+    }
+    
   }
 
-  update(id: number, updateNewsTickerDto: UpdateNewsTickerDto) {
-    return `This action updates a #${id} newsTicker`;
+ async  update(id: number, updateNewsTickerData: UpdateNewsTickerDto) {
+  const newsTicker = await this.findOne({where: {id}}); 
+  this.newsTickerRepository.merge(newsTicker, updateNewsTickerData);
+    return await this.newsTickerRepository.save(newsTicker);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} newsTicker`;
+  async remove(id: number) {
+    await this.newsTickerRepository.findOne({where: {id}});
+    this.newsTickerRepository.softDelete(id);
   }
 }
