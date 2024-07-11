@@ -7,7 +7,6 @@ import { Account } from '../account/account.entity';
 
 @Injectable()
 export class PlayerService {
-
   private readonly logger = new Logger(PlayerService.name);
 
   constructor(
@@ -18,8 +17,7 @@ export class PlayerService {
   ) {}
 
   async findByPlayerName(name: string): Promise<Player | undefined> {
-
-     this.logger.debug(`Searching for player with name: ${name}`);
+    this.logger.debug(`Searching for player with name: ${name}`);
 
     const player = await this.playerRepository.findOne({
       where: { name },
@@ -28,6 +26,9 @@ export class PlayerService {
 
     if (player) {
       player.account = null;
+      this.logger.debug(`Player found: ${player.name}`);
+    } else {
+      this.logger.debug('Player name not found');
     }
     return player;
   }
@@ -53,9 +54,17 @@ export class PlayerService {
     return savedPlayer;
   }
 
+  async findAllByAccountId(accountId: number): Promise<Partial<Player>[]> {
+    this.logger.debug(`Listing players for account id: ${accountId}`);
+    const players = await this.playerRepository.find({
+      where: { account: { id: accountId } },
+      select: ['id', 'name', 'vocation', 'level'],
+    });
+    this.logger.debug(`Players found: ${JSON.stringify(players)}`);
+    return players;
+  }
 
   async findByPlayerId(id: number): Promise<Player | undefined> {
-
     this.logger.debug(`Searching for player with ID: ${id}`);
     
     const player = await this.playerRepository.findOne({
@@ -65,6 +74,9 @@ export class PlayerService {
 
     if (player) {
       player.account = null;
+      this.logger.debug(`Player found: ${player.name}`);
+    } else {
+      this.logger.debug('Player ID not found');
     }
     return player;
   }
