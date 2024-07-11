@@ -1,4 +1,4 @@
-import { Controller, Param, Patch, Body, Get, Post, NotFoundException, Req, UsePipes, ValidationPipe, UseGuards } from '@nestjs/common';
+import { Controller, Param, Patch, Body, Get, Post, NotFoundException, Req, UsePipes, ValidationPipe, UseGuards, Logger } from '@nestjs/common';
 import { PlayerService } from './player.service';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody } from '@nestjs/swagger';
 import { CreatePlayerDto } from './dto/create-player.dto';
@@ -8,6 +8,8 @@ import { AuthGuard } from '@nestjs/passport';
 @ApiTags('players')
 @Controller('players')
 export class PlayerController {
+  private readonly logger = new Logger(PlayerController.name);
+  
   constructor(private readonly playerService: PlayerService) {}
 
   @Patch(':name/transferable-coins')
@@ -54,7 +56,8 @@ export class PlayerController {
     },
   })
   async createPlayer(@Body() createPlayerDto: CreatePlayerDto, @Req() request): Promise<Player> {
-    const accountId = request.user.sub; 
+    const accountId = request.user?.accountId;
+    this.logger.debug(`Creating player for account id: ${accountId}`);
     return this.playerService.createPlayer(createPlayerDto, accountId);
   }
 }
