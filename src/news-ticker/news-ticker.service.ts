@@ -13,7 +13,7 @@ export class NewsTickerService {
 
 
   async create(newsTickerData: CreateNewsTickerDto) {
-    const newsTicker = await this.newsTickerRepository.create(newsTickerData);   
+    const newsTicker = this.newsTickerRepository.create(newsTickerData);   
     return await this.newsTickerRepository.save(newsTicker);
   }
 

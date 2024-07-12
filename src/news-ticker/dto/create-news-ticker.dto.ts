@@ -1,8 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { NewsTicker } from "../entities/news-ticker.entity";
 import { IsNotEmpty, IsString } from "class-validator";
 
-export class CreateNewsTickerDto extends NewsTicker {
+export class CreateNewsTickerDto {
 
     @ApiProperty()
     @IsString()

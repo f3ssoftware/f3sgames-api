@@ -3,58 +3,61 @@ import { AccountService } from './account.service';
 import { CreateAccountDto } from './dto/create-account';
 import { UpdateAccountDto } from './dto/update-account';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 @Controller('account')
 
 export class AccountController {
-  constructor(private readonly accountService: AccountService) {}
+  constructor(private readonly accountService: AccountService) { }
 
-  @Post()
+
   @ApiOperation({ summary: 'Create new account' })
   @ApiResponse({ status: 200, description: 'Account created.' })
   @ApiResponse({ status: 404, description: 'Create problem.' })
-  async store(@Body() body: CreateAccountDto){
+  @Post()
+  async store(@Body() body: CreateAccountDto) {
     return await this.accountService.store(body);
   }
-
-  @Get()
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Find all accounts' })
   @ApiResponse({ status: 200, description: 'Accounts found.' })
   @ApiResponse({ status: 404, description: 'Accounts not found.' })
   @UseGuards(AuthGuard('jwt'))
-  async index(){
+  @Get()
+  async index() {
     return await this.accountService.findAll();
   }
-
-  @Get(':id')
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Find one account by id' })
   @ApiResponse({ status: 200, description: 'Account found.' })
   @ApiResponse({ status: 404, description: 'Account not found.' })
   @UseGuards(AuthGuard('jwt'))
-  async indexOf(@Param("id") id: number){
-    return await this.accountService.findOneOrFail({where: {id}});
+  @Get(':id')
+  async indexOf(@Param("id") id: number) {
+    return await this.accountService.findOneOrFail({ where: { id } });
   }
 
-  @Put(':id')
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Update account' })
   @ApiResponse({ status: 200, description: 'Account update successfully.' })
   @ApiResponse({ status: 404, description: 'Account not found.' })
   @UseGuards(AuthGuard('jwt'))
+  @Put(':id')
   async update(
     @Param("id") id: number,
-    @Body() body: UpdateAccountDto,  
-  ){
+    @Body() body: UpdateAccountDto,
+  ) {
     return await this.accountService.update(id, body);
   }
 
-  @Delete(':id')
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Delete account' })
   @ApiResponse({ status: 200, description: 'Account deleted.' })
   @ApiResponse({ status: 404, description: 'Account not found.' })
-  @UseGuards(AuthGuard('jwt'))
   @HttpCode(HttpStatus.NO_CONTENT)
-  async destroy(@Param("id") id: number){
+  @UseGuards(AuthGuard('jwt'))
+  @Delete(':id')
+  async destroy(@Param("id") id: number) {
     await this.accountService.destroy(id);
   }
 }
