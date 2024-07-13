@@ -43,7 +43,7 @@ export class PaymentService {
         })),
       };
 
-      this.logger.debug('Dados de phone após formatação:', JSON.stringify(customer.phones));
+      this.logger.debug('Phone data:', JSON.stringify(customer.phones));
 
       switch (paymentMethod) {
         case PaymentMethodEnum.PIX:
