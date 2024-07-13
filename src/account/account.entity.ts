@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany, BeforeInsert } from 'typeorm';
 import { Player } from '../players/player.entity';
-import {hashSync} from 'bcrypt'
+import {hashSync} from 'bcryptjs'
 
 @Entity({ name: 'accounts' })
 export class Account {

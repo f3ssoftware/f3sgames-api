@@ -10,6 +10,7 @@ import { GenerateOrderDto } from './dto/generate-order.dto';
 import { ProductsEnum } from './enums/products.enum';
 import { PagseguroCreateOrderPixDto } from '../pagseguro-integration/dto/pagseguro-create-order-pix.dto';
 import { PagseguroCreateOrderCreditCardDto } from '../pagseguro-integration/dto/pagseguro-create-order-creditcard.dto';
+import axios from 'axios';
 
 @Injectable()
 export class PaymentService {
@@ -29,7 +30,7 @@ export class PaymentService {
       status: OrderStatusEnum.CREATED,
     });
     await this.orderRepository.save(order);
-  
+
     let response;
     try {
       const customer = {
@@ -38,13 +39,12 @@ export class PaymentService {
           type: phone.type,
           country: phone.country,
           area: phone.area,
-          number: phone.number.padStart(9, '0'), // Ensure the number is at least 8 digits long
+          number: phone.number.padStart(9, '0'),
         })),
       };
-  
-      // Log para visualizar os dados de phone após formatação
-      this.logger.debug('Dados de phone após formatação:', JSON.stringify(customer.phones));
-  
+
+      this.logger.debug('Phone data:', JSON.stringify(customer.phones));
+
       switch (paymentMethod) {
         case PaymentMethodEnum.PIX:
           const pixOrderDto: PagseguroCreateOrderPixDto = {
@@ -92,7 +92,7 @@ export class PaymentService {
                 reference_id: 'charge-1',
                 description: 'Payment Charge',
                 amount: {
-                  value: Math.max(orderData.amount, 100), // Garantindo que o valor mínimo seja 100 centavos (R$1,00)
+                  value: Math.max(orderData.amount, 100),
                   currency: 'BRL',
                 },
                 payment_method: {
@@ -111,16 +111,22 @@ export class PaymentService {
           response = await this.pagseguroIntegrationService.createCreditCardOrder(creditCardOrderDto);
           break;
       }
-  
+
+      if (response && response.id) {
+        order.pagseguroOrderId = response.id;
+      } else {
+        this.logger.warn('Missing id in response');
+      }
+
       if (response && response.qr_codes) {
         order.qr_codes = response.qr_codes;
       } else {
         this.logger.warn('Missing qr_codes in response');
       }
-  
+
       order.status = OrderStatusEnum.CREATED;
       await this.orderRepository.save(order);
-  
+
       this.logger.log('Order created successfully');
       return order;
     } catch (error) {
@@ -128,8 +134,6 @@ export class PaymentService {
       throw error;
     }
   }
-  
-  
 
   async checkOrderStatus(orderId: string): Promise<Order> {
     this.logger.log(`Checking order status for orderId: ${orderId}`);
@@ -138,14 +142,15 @@ export class PaymentService {
       this.logger.warn(`Order not found: ${orderId}`);
       throw new NotFoundException('Order not found');
     }
-
-    const response = await this.pagseguroIntegrationService.checkOrderStatus(order.id);
-    order.status = response.status;
+  
+    const response = await this.pagseguroIntegrationService.checkOrderStatus(order.pagseguroOrderId);
+    order.pagseguroStatus = response.charges[0]?.status || 'UNKNOWN';
     await this.orderRepository.save(order);
-
-    this.logger.log(`Order status updated: ${order.status}`);
+  
+    this.logger.log(`Order status updated: ${order.pagseguroStatus}`);
     return order;
   }
+  
 
   async handlePaymentConfirmation(notificationData: any): Promise<void> {
     this.logger.log('Handling payment confirmation...');
