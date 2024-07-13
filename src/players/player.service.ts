@@ -48,8 +48,11 @@ export class PlayerService {
       account,
     });
 
-    return this.playerRepository.save(newPlayer);
+    const savedPlayer = await this.playerRepository.save(newPlayer);
+    this.logger.debug(`Player ${savedPlayer.name} created successfully`);
+    return savedPlayer;
   }
+
 
   async findByPlayerId(id: number): Promise<Player | undefined> {
 
