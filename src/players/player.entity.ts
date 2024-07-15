@@ -8,7 +8,7 @@ import {
   OneToOne,
 } from 'typeorm';
 import { Account } from '../account/account.entity';
-import { PlayersOnline } from 'src/players-online/entities/players-online.entity';
+import { PlayersOnline } from '../players-online/entities/players-online.entity';
 
 @Entity({ name: 'players' })
 @Unique(['name'])

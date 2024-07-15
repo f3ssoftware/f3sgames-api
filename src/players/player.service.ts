@@ -22,11 +22,9 @@ export class PlayerService {
 
     const player = await this.playerRepository.findOne({
       where: { name },
-      relations: ['account'],
     });
 
     if (player) {
-      player.account = null;
       this.logger.debug(`Player found: ${player.name}`);
     } else {
       this.logger.debug('Player name not found');
@@ -95,7 +93,7 @@ export class PlayerService {
     player.account.coinsTransferable += coins;
     player.account.coins += coins;
     await this.accountRepository.save(player.account);
-  
+    
     return new PlayerResponseDto(player);
   }
 }
