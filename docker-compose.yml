@@ -9,12 +9,12 @@ services:
     environment:
       - PAGBANK_API_URL=${PAGBANK_API_URL}
       - PAGBANK_API_TOKEN=${PAGBANK_API_TOKEN}
-      - DATABASE_HOST=localhost
+      - DATABASE_HOST=postgres_db
       - DATABASE_PORT=${DATABASE_PORT}
       - DATABASE_USERNAME=${DATABASE_USERNAME}
       - DATABASE_PASSWORD=${DATABASE_PASSWORD}
       - DATABASE_NAME=${DATABASE_NAME}
-      - GAME_DATABASE_HOST=localhost
+      - GAME_DATABASE_HOST=mariadb_db
       - GAME_DATABASE_PORT=${GAME_DATABASE_PORT}
       - GAME_DATABASE_USERNAME=${GAME_DATABASE_USERNAME}
       - GAME_DATABASE_PASSWORD=${GAME_DATABASE_PASSWORD}
@@ -23,11 +23,12 @@ services:
     depends_on:
       - postgres
       - mariadb
+    networks:
+      - my_network
 
   postgres:
     image: postgres:14
     container_name: postgres_db
-    network_mode: host
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: Hayasak1!.,.
@@ -42,6 +43,8 @@ services:
       interval: 30s
       timeout: 10s
       retries: 5
+    networks:
+      - my_network
 
   mariadb:
     image: mariadb:10.5
@@ -65,38 +68,12 @@ services:
       interval: 30s
       timeout: 10s
       retries: 5
+    networks:
+      - my_network
 
 volumes:
   pgdata:
   mariadbdata:
 
-
-    # mariadb:
-    #   image: mariadb:10.5
-    #   container_name: mariadb_db
-    #   environment:
-    #     MYSQL_ROOT_PASSWORD: sua_senha_root
-    #     MYSQL_DATABASE: wkotserv_db
-    #     MYSQL_USER: admin
-    #     MYSQL_PASSWORD: Hayasak1!.,.
-    #   ports:
-    #     - '3306:3306'
-    #   volumes:
-    #     - mariadbdata:/var/lib/mysql
-    #     - ./initdb/mariadb:/docker-entrypoint-initdb.d
-    #   healthcheck:
-    #     test:
-    #       [
-    #         'CMD',
-    #         'mysqladmin',
-    #         'ping',
-    #         '-h',
-    #         'localhost',
-    #         '-u',
-    #         'admin',
-    #         '--password=Hayasak1!.,.',
-    #       ]
-    #     interval: 30s
-    #     timeout: 10s
-    #     retries: 5
-    #   network_mode: 'bridge'
+networks:
+  my_network:
