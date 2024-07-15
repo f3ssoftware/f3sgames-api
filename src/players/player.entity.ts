@@ -19,6 +19,9 @@ export class Player {
   @Column()
   name: string;
 
+  @Column({ default: '' }) 
+  conditions: string;
+
   @Column()
   vocation: number;
 

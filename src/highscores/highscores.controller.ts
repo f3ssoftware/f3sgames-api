@@ -9,6 +9,7 @@ import { HighscoresService } from './highscores.service';
 import { ApiTags, ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
 import { Vocation } from 'src/players/enums/vocations.enum';
 import { Category } from './enum/category.enum';
+import { VocationFilter } from './dto/vocationFilter.dto';
 
 @ApiTags('highscores')
 @Controller('highscores')
@@ -18,15 +19,15 @@ export class HighscoresController {
   @Get()
   @ApiOperation({ summary: 'Get highscores' })
   @ApiQuery({ name: 'category', required: true, enum: Category })
-  @ApiQuery({ name: 'vocation', required: false, enum: Vocation })
-  @ApiQuery({ name: 'limit', required: false, type: Number })
+  @ApiQuery({ name: 'vocation', required: true, enum: VocationFilter })
+  @ApiQuery({ name: 'limit', required: true, type: Number })
   @ApiResponse({
     status: 200,
     description: 'Highscores retrieved successfully.',
   })
   async getHighscores(
     @Query('category') category: Category,
-    @Query('vocation') vocation: string = 'All',
+    @Query('vocation') vocation: VocationFilter = VocationFilter.All,
     @Query('limit') limit: number = 10,
   ): Promise<
     {
@@ -44,12 +45,30 @@ export class HighscoresController {
       limit = 1000;
     }
 
-    const vocationNumber =
-      vocation === 'All' ? 'All' : Vocation[vocation as keyof typeof Vocation];
+    const vocationNumber = this.mapVocationFilterToNumber(vocation);
     return this.highscoresService.getHighscores(
       category,
       vocationNumber,
       limit,
     );
+  }
+
+  private mapVocationFilterToNumber(vocation: VocationFilter): number | 'All' {
+    switch (vocation) {
+      case VocationFilter.All:
+        return 'All';
+      case VocationFilter.None:
+        return Vocation.None;
+      case VocationFilter.Sorcerer:
+        return Vocation.Sorcerer;
+      case VocationFilter.Druid:
+        return Vocation.Druid;
+      case VocationFilter.Paladin:
+        return Vocation.Paladin;
+      case VocationFilter.Knight:
+        return Vocation.Knight;
+      default:
+        return 'All';
+    }
   }
 }
