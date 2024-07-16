@@ -113,4 +113,10 @@ export class Order {
 
   @Column({ nullable: true })
   updatedAt: Date;
+
+  @Column({ nullable: true })
+  pagseguroOrderId: string;  
+
+  @Column({ nullable: true })
+  pagseguroStatus: string;
 }

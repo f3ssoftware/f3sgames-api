@@ -1,0 +1,64 @@
+{
+  "id": "ORDE_27100FB6-82BF-4E1A-9769-6228D8DC0D65",
+  "reference_id": "c9be1019-1816-4eb5-9661-d568d8606c58",
+  "created_at": "2024-07-11T15:37:15.490-03:00",
+  "customer": {
+    "name": "Felipe Sampaio Marques Souza",
+    "email": "fmarques899@gmail.com",
+    "tax_id": "04718287189",
+    "phones": [
+      { "type": "MOBILE", "country": "55", "area": "61", "number": "999999999" }
+    ]
+  },
+  "items": [{ "name": "Tibia Coin", "quantity": 1250, "unit_amount": 1 }],
+  "shipping": {
+    "address": {
+      "street": "Largo Fernando Gallego",
+      "number": "20",
+      "complement": "N/A",
+      "locality": "Centro",
+      "city": "São Paulo",
+      "region_code": "SP",
+      "country": "BRA",
+      "postal_code": "01007070"
+    }
+  },
+  "qr_codes": [
+    {
+      "id": "QRCO_0F2CD12B-4313-4252-B198-8569632ED2E5",
+      "expiration_date": "2024-07-12T23:59:59.000-03:00",
+      "amount": { "value": 100 },
+      "text": "00020101021226850014br.gov.bcb.pix2563api-h.pagseguro.com/pix/v2/0F2CD12B-4313-4252-B198-8569632ED2E527600016BR.COM.PAGSEGURO01360F2CD12B-4313-4252-B198-8569632ED2E552048999530398654041.005802BR5922F3S Tecnologia da Info6008Brasilia62070503***63041C55",
+      "arrangements": ["PIX"],
+      "links": [
+        {
+          "rel": "QRCODE.PNG",
+          "href": "https://sandbox.api.pagseguro.com/qrcode/QRCO_0F2CD12B-4313-4252-B198-8569632ED2E5/png",
+          "media": "image/png",
+          "type": "GET"
+        },
+        {
+          "rel": "QRCODE.BASE64",
+          "href": "https://sandbox.api.pagseguro.com/qrcode/QRCO_0F2CD12B-4313-4252-B198-8569632ED2E5/base64",
+          "media": "text/plain",
+          "type": "GET"
+        }
+      ]
+    }
+  ],
+  "notification_urls": ["https://pagamento.f3ssoftware.com/webhook"],
+  "links": [
+    {
+      "rel": "SELF",
+      "href": "https://sandbox.api.pagseguro.com/orders/ORDE_27100FB6-82BF-4E1A-9769-6228D8DC0D65",
+      "media": "application/json",
+      "type": "GET"
+    },
+    {
+      "rel": "PAY",
+      "href": "https://sandbox.api.pagseguro.com/orders/ORDE_27100FB6-82BF-4E1A-9769-6228D8DC0D65/pay",
+      "media": "application/json",
+      "type": "POST"
+    }
+  ]
+}
