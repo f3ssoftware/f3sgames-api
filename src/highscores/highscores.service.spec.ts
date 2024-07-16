@@ -86,8 +86,7 @@ describe('HighscoresService', () => {
       expect(mockPlayerRepository.orderBy).toHaveBeenCalledWith('player.experience', 'DESC');
       expect(mockPlayerRepository.limit).toHaveBeenCalledWith(2);
     });
-
-    // Add more tests for different categories and vocations if needed
+    
     it('should return the correct highscores for all vocations', async () => {
       mockPlayerRepository.getMany.mockResolvedValue([
         { id: 1, name: 'Player1', vocation: Vocation.Sorcerer, level: 100, experience: 5000 },
