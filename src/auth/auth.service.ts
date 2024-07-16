@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+
 import * as argon2 from 'argon2';
+
 import { Account } from 'src/account/account.entity';
 import { AccountService } from 'src/account/account.service';
 
@@ -12,7 +14,7 @@ export class AuthService {
     const payload = { sub: user.id, email: user.email };
     return {
       token: this.jwtService.sign(payload),
-    }
+    };
   }
 
   async validateAccount(email: string, password: string) {
@@ -27,6 +29,4 @@ export class AuthService {
     if (!isPasswordValid) return null;
     return account;
   }
-
-
 }
