@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { compareSync } from 'bcryptjs';
+
+import * as argon2 from 'argon2';
+
 import { Account } from 'src/account/account.entity';
 import { AccountService } from 'src/account/account.service';
 
@@ -23,7 +25,7 @@ export class AuthService {
       return null;
     }
 
-    const isPasswordValid = compareSync(password, account.password);
+    const isPasswordValid = await argon2.verify(account.password, password);
     if (!isPasswordValid) return null;
     return account;
   }

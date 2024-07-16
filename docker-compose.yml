@@ -24,7 +24,7 @@ services:
       - postgres
       - mariadb
     networks:
-      - my_network
+      - f3s_network
 
   postgres:
     image: postgres:14
@@ -44,7 +44,7 @@ services:
       timeout: 10s
       retries: 5
     networks:
-      - my_network
+      - f3s_network
 
   mariadb:
     image: mariadb:10.5
@@ -69,11 +69,10 @@ services:
       timeout: 10s
       retries: 5
     networks:
-      - my_network
-
+      - f3s_network
 volumes:
   pgdata:
   mariadbdata:
 
 networks:
-  my_network:
+  f3s_network:

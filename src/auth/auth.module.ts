@@ -10,8 +10,8 @@ import { JwtStrategy } from './strategies/jwt.strategy';
 
 @Module({
   imports: [AccountModule, PassportModule, ConfigModule.forRoot(), JwtModule.register({
-    secret: process.env.JWT_SECRET_KEY,
-    signOptions: {expiresIn: "60s"},
+    privateKey: process.env.JWT_SECRET_KEY,
+    signOptions: {expiresIn: "1h"},
   })],
   controllers: [AuthController],
   providers: [AuthService, LocalStrategy, JwtStrategy],

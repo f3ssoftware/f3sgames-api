@@ -1,6 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany, BeforeInsert } from 'typeorm';
 import { Player } from '../players/player.entity';
-import {hashSync} from 'bcryptjs'
+import * as argon2 from 'argon2';
+
 
 @Entity({ name: 'accounts' })
 export class Account {
@@ -41,7 +42,7 @@ export class Account {
   players: Player[];
 
   @BeforeInsert()
-  hashPassword(){
-    this.password = hashSync(this.password, 10)
+  async hashPassword() {
+    this.password = await argon2.hash(this.password);
   }
 }

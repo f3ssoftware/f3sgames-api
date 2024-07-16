@@ -11,6 +11,7 @@ import { AccountModule } from './account/account.module';
 import { AuthModule } from './auth/auth.module';
 import { PlayersOnlineModule } from './players-online/players-online.module';
 import { PlayersOnline } from './players-online/entities/players-online.entity';
+import { NewsTickerModule } from './news-ticker/news-ticker.module';
 
 @Module({
   imports: [
@@ -30,9 +31,11 @@ import { PlayersOnline } from './players-online/entities/players-online.entity';
           database: configService.get<string>('DATABASE_NAME'),
           autoLoadEntities: true,
           synchronize: true,
+          logging: true
         };
       },
       inject: [ConfigService],
+
     }),
     TypeOrmModule.forRootAsync({
       name: 'gameConnection',
@@ -58,6 +61,7 @@ import { PlayersOnline } from './players-online/entities/players-online.entity';
     AccountModule,
     AuthModule,
     PlayersOnlineModule,
+    NewsTickerModule,
   ],
 })
 export class AppModule {}
