@@ -64,7 +64,7 @@ export class PlayerService {
       throw new NotFoundException('Account not found');
     }
 
-    const players = await this.playerRepository.find({
+    const players = await this.playerRepository.find({ 
       where: { account: { id: accountId } },
       select: ['id', 'name', 'vocation', 'level'],
     });
@@ -93,16 +93,23 @@ export class PlayerService {
   }
 
   async updateTransferableCoins(name: string, coins: number): Promise<PlayerResponseDto> {
+    this.logger.debug(`updateTransferableCoins called with name: ${name}, coins: ${coins}`);
     const player = await this.playerRepository.findOne({
       where: { name },
       relations: ['account'],
     });
-    if (!player) throw new NotFoundException('Player not found');
+    if (!player) {
+      this.logger.error('Player not found');
+      throw new NotFoundException('Player not found');
+    }
   
     player.account.coinsTransferable += coins;
     player.account.coins += coins;
     await this.accountRepository.save(player.account);
-    
-    return new PlayerResponseDto(player);
-  }
+
+    const result = new PlayerResponseDto(player);
+    this.logger.debug(`updateTransferableCoins result: ${JSON.stringify(result)}`);
+    return result;
+}
+
 }
