@@ -58,11 +58,22 @@ export class PlayerService {
 
   async findAllByAccountId(accountId: number): Promise<Partial<Player>[]> {
     this.logger.debug(`Listing players for account id: ${accountId}`);
+    
+    const account = await this.accountRepository.findOne({ where: { id: accountId } });
+    if (!account) {
+      throw new NotFoundException('Account not found');
+    }
+
     const players = await this.playerRepository.find({
       where: { account: { id: accountId } },
       select: ['id', 'name', 'vocation', 'level'],
     });
-    this.logger.debug(`Players found: ${JSON.stringify(players)}`);
+
+    if (players.length === 0) {
+      this.logger.debug(`No players found for account id: ${accountId}`);
+    } else {
+      this.logger.debug(`Players found: ${JSON.stringify(players)}`);
+    }
     return players;
   }
 
@@ -71,11 +82,9 @@ export class PlayerService {
     
     const player = await this.playerRepository.findOne({
       where: { id },
-      relations: ['account'],
     });
 
     if (player) {
-      player.account = null;
       this.logger.debug(`Player found: ${player.name}`);
     } else {
       this.logger.debug('Player ID not found');
