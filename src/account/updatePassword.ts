@@ -2,7 +2,7 @@ import 'tsconfig-paths/register';
 import { createConnection } from 'typeorm';
 import { Account } from './account.entity';
 import { Player } from '../players/player.entity';
-import { PlayersOnline } from '../players-online/entities/players-online.entity'; 
+import { PlayersOnline } from '../players-online/entities/players-online.entity';
 import { hashSync } from 'bcryptjs';
 import * as dotenv from 'dotenv';
 

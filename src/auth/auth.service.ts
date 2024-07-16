@@ -8,11 +8,11 @@ import { AccountService } from 'src/account/account.service';
 export class AuthService {
   constructor(private accountService: AccountService, private jwtService: JwtService) { }
 
-  async login(user: any)  {
-    const payload = {sub: user.id, email: user.email};
-    return{
+  async login(user: any) {
+    const payload = { sub: user.id, email: user.email };
+    return {
       token: this.jwtService.sign(payload),
-    }
+    };
   }
 
   async validateAccount(email: string, password: string) {
@@ -27,6 +27,4 @@ export class AuthService {
     if (!isPasswordValid) return null;
     return account;
   }
-
-
 }
