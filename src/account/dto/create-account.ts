@@ -1,4 +1,3 @@
-import { Account } from '../account.entity';
 import {
   IsEmail,
   IsNotEmpty,
@@ -8,7 +7,7 @@ import {
   MinLength,
 } from 'class-validator';
 
-export class CreateAccountDto extends Account {
+export class CreateAccountDto {
   @IsEmail()
   @IsNotEmpty()
   email: string;
@@ -25,4 +24,13 @@ export class CreateAccountDto extends Account {
   @IsString()
   @IsNotEmpty()
   name: string;
+
+  id?: number;
+  premDays?: number;
+  premDaysPurchased?: number;
+  coins?: number;
+  coinsTransferable?: number;
+  tournamentCoins?: number;
+  creation?: number;
+  recruiter?: number;
 }

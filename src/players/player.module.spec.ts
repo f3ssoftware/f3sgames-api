@@ -1,35 +1,41 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { PlayerModule } from './player.module';
+import { Player } from './player.entity';
 import { PlayerService } from './player.service';
 import { PlayerController } from './player.controller';
-import { Player } from './player.entity';
 import { AccountModule } from '../account/account.module';
+import { PlayerModule } from './player.module';
+import { getRepositoryToken } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 describe('PlayerModule', () => {
-  let module: TestingModule;
+  let testingModule: TestingModule;
 
   beforeEach(async () => {
-    module = await Test.createTestingModule({
+    testingModule = await Test.createTestingModule({
       imports: [
         TypeOrmModule.forFeature([Player], 'gameConnection'),
-        PlayerModule,
         AccountModule,
+        PlayerModule,
       ],
-    }).compile();
+    })
+      .overrideProvider(getRepositoryToken(Player, 'gameConnection'))
+      .useClass(Repository)
+      .compile();
   });
 
   it('should be defined', () => {
-    expect(module).toBeDefined();
+    const playerModule = testingModule.get<PlayerModule>(PlayerModule);
+    expect(playerModule).toBeDefined();
   });
 
   it('should have PlayerService', () => {
-    const service = module.get<PlayerService>(PlayerService);
+    const service = testingModule.get<PlayerService>(PlayerService);
     expect(service).toBeDefined();
   });
 
   it('should have PlayerController', () => {
-    const controller = module.get<PlayerController>(PlayerController);
+    const controller = testingModule.get<PlayerController>(PlayerController);
     expect(controller).toBeDefined();
   });
 });

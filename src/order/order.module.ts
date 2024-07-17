@@ -15,4 +15,4 @@ import { Order } from './order.entity';
   providers: [PaymentService],
   controllers: [PaymentController],
 })
-export class PaymentModule {}
+export class PaymentModule { }

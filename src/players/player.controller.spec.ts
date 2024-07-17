@@ -80,8 +80,7 @@ describe('PlayerController', () => {
       mockPlayerService.updateTransferableCoins.mockResolvedValue(playerResponseDto);
 
       const result = await controller.updateTransferableCoins(name, coins);
-
-      console.log('Result:', result);  // Log the result
+      
       expect(result).toEqual(playerResponseDto);
       expect(mockPlayerService.updateTransferableCoins).toHaveBeenCalledWith(name, coins);
     });

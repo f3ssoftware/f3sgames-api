@@ -2,29 +2,38 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { HighscoresService } from './highscores.service';
 import { HighscoresController } from './highscores.controller';
-import { HighscoresModule } from './highscores.module';
 import { Player } from '../players/player.entity';
+import { HighscoresModule } from './highscores.module';
+import { getRepositoryToken } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 describe('HighscoresModule', () => {
-  let module: TestingModule;
+  let testingModule: TestingModule;
 
   beforeEach(async () => {
-    module = await Test.createTestingModule({
-      imports: [TypeOrmModule.forFeature([Player], 'gameConnection'), HighscoresModule],
-    }).compile();
+    testingModule = await Test.createTestingModule({
+      imports: [
+        TypeOrmModule.forFeature([Player], 'gameConnection'),
+        HighscoresModule,
+      ],
+    })
+      .overrideProvider(getRepositoryToken(Player, 'gameConnection'))
+      .useClass(Repository)
+      .compile();
   });
 
   it('should be defined', () => {
-    expect(module).toBeDefined();
+    const highscoresModule = testingModule.get<HighscoresModule>(HighscoresModule);
+    expect(highscoresModule).toBeDefined();
   });
 
   it('should have HighscoresService', () => {
-    const service = module.get<HighscoresService>(HighscoresService);
+    const service = testingModule.get<HighscoresService>(HighscoresService);
     expect(service).toBeDefined();
   });
 
   it('should have HighscoresController', () => {
-    const controller = module.get<HighscoresController>(HighscoresController);
+    const controller = testingModule.get<HighscoresController>(HighscoresController);
     expect(controller).toBeDefined();
   });
 });

@@ -1,11 +1,6 @@
-import {
-    IsEmail,
-    IsNotEmpty,
-    IsString
-} from 'class-validator';
-import { Account } from '../account.entity';
+import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 
-export class UpdateAccountDto extends Account {
+export class UpdateAccountDto {
   @IsEmail()
   @IsNotEmpty()
   email: string;
@@ -13,4 +8,13 @@ export class UpdateAccountDto extends Account {
   @IsString()
   @IsNotEmpty()
   name: string;
+
+  password?: string;
+  premDays?: number;
+  premDaysPurchased?: number;
+  coins?: number;
+  coinsTransferable?: number;
+  tournamentCoins?: number;
+  creation?: number;
+  recruiter?: number;
 }
