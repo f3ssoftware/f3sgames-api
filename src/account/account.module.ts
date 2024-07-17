@@ -8,6 +8,6 @@ import { Account } from './account.entity';
   imports: [TypeOrmModule.forFeature([Account], 'gameConnection')],
   providers: [AccountService],
   controllers: [AccountController],
-  exports: [AccountService],
+  exports: [AccountService, TypeOrmModule], 
 })
 export class AccountModule {}
