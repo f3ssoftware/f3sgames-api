@@ -21,7 +21,7 @@ services:
       - API_URL=${API_URL}
     depends_on:
       - postgres
-      - mariadb
+      # - mariadb
 
   postgres:
     image: postgres:14
