@@ -9,7 +9,7 @@ import { AuthGuard } from '@nestjs/passport';
 export class NewsTickerController {
   constructor(private readonly newsTickerService: NewsTickerService) {}
 
-  @ApiBearerAuth()
+  @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'Create new news ticker' })
   @ApiResponse({ status: 200, description: 'News Ticker created.' })
   @ApiResponse({ status: 404, description: 'Problem to create.' })
