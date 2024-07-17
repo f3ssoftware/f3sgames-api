@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import 'tsconfig-paths/register';
 import { createConnection } from 'typeorm';
 import { Account } from './account.entity';

@@ -1,4 +1,4 @@
-// player-response.dto.ts
+/* istanbul ignore file */
 import { Player } from '../player.entity';
 import { Account } from '../../account/account.entity';
 

@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany, BeforeInsert } from 'typeorm';
 import { Player } from '../players/player.entity';
 import {hashSync} from 'bcryptjs'

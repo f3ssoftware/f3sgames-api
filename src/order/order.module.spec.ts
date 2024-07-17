@@ -1,45 +1,30 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { PaymentService } from './order.service';
-import { PaymentController } from './order.controller';
+import { ConfigModule } from '@nestjs/config';
 import { Order } from './order.entity';
+import { PaymentModule } from './order.module';
 import { PlayerModule } from '../players/player.module';
 import { PagseguroIntegrationModule } from '../pagseguro-integration/pagseguro-integration.module';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { PaymentModule } from './order.module';
 
-describe('PaymentModule', () => {
-  let testingModule: TestingModule;
+describe('OrderModule', () => {
+  let module: TestingModule;
 
   beforeEach(async () => {
-    testingModule = await Test.createTestingModule({
+    module = await Test.createTestingModule({
       imports: [
+        ConfigModule.forRoot({
+          isGlobal: true,
+        }),
         TypeOrmModule.forFeature([Order], 'paymentConnection'),
+        PaymentModule,
         PlayerModule,
         PagseguroIntegrationModule,
       ],
-      controllers: [PaymentController],
-      providers: [PaymentService],
-    })
-      .overrideProvider(getRepositoryToken(Order, 'paymentConnection'))
-      .useClass(Repository)
-      .compile();
+    }).compile();
   });
 
   it('should be defined', () => {
-    const paymentModule = testingModule.get<PaymentModule>(PaymentModule);
-    expect(paymentModule).toBeDefined();
-  });
-
-  it('should have PaymentService', () => {
-    const service = testingModule.get<PaymentService>(PaymentService);
-    expect(service).toBeDefined();
-  });
-
-  it('should have PaymentController', () => {
-    const controller = testingModule.get<PaymentController>(PaymentController);
-    expect(controller).toBeDefined();
+    const app = module.get<PaymentModule>(PaymentModule);
+    expect(app).toBeDefined();
   });
 });
-

@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import { Player } from "../../players/player.entity";
 import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from "typeorm";
 

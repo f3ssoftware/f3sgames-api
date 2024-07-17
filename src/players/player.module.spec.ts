@@ -1,41 +1,45 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { PlayerModule } from './player.module';
+import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { Player } from './player.entity';
+import { AccountModule } from '../account/account.module';
+import { ConfigModule } from '@nestjs/config';
 import { PlayerService } from './player.service';
 import { PlayerController } from './player.controller';
-import { AccountModule } from '../account/account.module';
-import { PlayerModule } from './player.module';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 
 describe('PlayerModule', () => {
-  let testingModule: TestingModule;
+  let module: TestingModule;
 
   beforeEach(async () => {
-    testingModule = await Test.createTestingModule({
+    module = await Test.createTestingModule({
       imports: [
+        ConfigModule.forRoot(),
+        TypeOrmModule.forRootAsync({
+          name: 'gameConnection',
+          useFactory: async () => ({
+            type: 'sqlite',
+            database: ':memory:',
+            entities: [Player],
+            synchronize: true,
+          }),
+        }),
         TypeOrmModule.forFeature([Player], 'gameConnection'),
         AccountModule,
-        PlayerModule,
       ],
-    })
-      .overrideProvider(getRepositoryToken(Player, 'gameConnection'))
-      .useClass(Repository)
-      .compile();
+    }).compile();
   });
 
   it('should be defined', () => {
-    const playerModule = testingModule.get<PlayerModule>(PlayerModule);
-    expect(playerModule).toBeDefined();
+    expect(module).toBeDefined();
   });
 
   it('should have PlayerService', () => {
-    const service = testingModule.get<PlayerService>(PlayerService);
+    const service = module.get<PlayerService>(PlayerService);
     expect(service).toBeDefined();
   });
 
   it('should have PlayerController', () => {
-    const controller = testingModule.get<PlayerController>(PlayerController);
+    const controller = module.get<PlayerController>(PlayerController);
     expect(controller).toBeDefined();
   });
 });

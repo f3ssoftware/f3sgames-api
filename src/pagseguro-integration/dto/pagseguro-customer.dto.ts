@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsNotEmpty, ValidateNested, IsArray, ArrayNotEmpty } from 'class-validator';
 import { Type } from 'class-transformer';

@@ -45,7 +45,7 @@ describe('AccountService', () => {
 
   describe('findAll', () => {
     it('should return an array of accounts', async () => {
-      const accounts = [{ id: 1, name: 'John', email: 'john@example.com' }];
+      const accounts = [{ id: 1, name: 'Felipe', email: 'felipe@example.com' }];
       repository.find.mockResolvedValue(accounts);
 
       expect(await service.findAll()).toEqual(accounts);
@@ -57,7 +57,7 @@ describe('AccountService', () => {
 
   describe('findOneOrFail', () => {
     it('should return an account if found', async () => {
-      const account = { id: 1, name: 'John', email: 'john@example.com' };
+      const account = { id: 1, name: 'Felipe', email: 'felipe@example.com' };
       repository.findOneOrFail.mockResolvedValue(account);
 
       expect(await service.findOneOrFail({ where: { id: 1 } })).toEqual(account);
@@ -75,8 +75,8 @@ describe('AccountService', () => {
   describe('store', () => {
     it('should create and return a new account', async () => {
       const createAccountDto: CreateAccountDto = {
-        name: 'John',
-        email: 'john@example.com',
+        name: 'Felipe',
+        email: 'felipe@example.com',
         password: 'StrongPass1',
       };
       const account = { id: 1, ...createAccountDto, premDays: 0, premDaysPurchased: 0, coins: 0 };
@@ -92,10 +92,10 @@ describe('AccountService', () => {
   describe('update', () => {
     it('should update and return the account', async () => {
       const updateAccountDto: UpdateAccountDto = {
-        name: 'John Updated',
-        email: 'john_updated@example.com',
+        name: 'Felipe Updated',
+        email: 'felipe_updated@example.com',
       };
-      const account = { id: 1, name: 'John', email: 'john@example.com', premDays: 0, premDaysPurchased: 0, coins: 0 };
+      const account = { id: 1, name: 'Felipe', email: 'felipe@example.com', premDays: 0, premDaysPurchased: 0, coins: 0 };
       repository.findOneOrFail.mockResolvedValue(account);
       repository.save.mockResolvedValue({ ...account, ...updateAccountDto });
 
@@ -107,8 +107,8 @@ describe('AccountService', () => {
 
     it('should throw a NotFoundException if account not found', async () => {
       const updateAccountDto: UpdateAccountDto = {
-        name: 'John Updated',
-        email: 'john_updated@example.com',
+        name: 'Felipe Updated',
+        email: 'felipe_updated@example.com',
       };
       repository.findOneOrFail.mockRejectedValue(new Error('Account not found'));
 
