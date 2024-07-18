@@ -12,6 +12,10 @@ import { AuthModule } from './auth/auth.module';
 import { PlayersOnlineModule } from './players-online/players-online.module';
 import { PlayersOnline } from './players-online/entities/players-online.entity';
 import { NewsTickerModule } from './news-ticker/news-ticker.module';
+import { BoostedBoss } from './bosses/boosted-boss.entity';
+import { BoostedBossModule } from './bosses/boosted-boss.module';
+import { BoostedCreature } from './creatures/boosted-creature.entity';
+import { BoostedCreatureModule } from './creatures/boosted-creature.module';
 
 @Module({
   imports: [
@@ -48,7 +52,7 @@ import { NewsTickerModule } from './news-ticker/news-ticker.module';
           username: configService.get<string>('GAME_DATABASE_USERNAME'),
           password: configService.get<string>('GAME_DATABASE_PASSWORD'),
           database: configService.get<string>('GAME_DATABASE_NAME'),
-          entities: [Player, Account, PlayersOnline],
+          entities: [Player, Account, PlayersOnline, BoostedBoss, BoostedCreature],
           synchronize: false,
         };
       },
@@ -62,6 +66,8 @@ import { NewsTickerModule } from './news-ticker/news-ticker.module';
     AuthModule,
     PlayersOnlineModule,
     NewsTickerModule,
+    BoostedBossModule,
+    BoostedCreatureModule,
   ],
 })
 export class AppModule {}
