@@ -1,3 +1,5 @@
+  /* istanbul ignore file */
+  
   /* Those cities are the ones that are linked to Rashid location */ 
 
 export enum RashidCities {
