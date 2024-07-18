@@ -12,7 +12,7 @@ export class BoostedCreatureController {
   @Get()
   @ApiOperation({ summary: 'Get all boosted creatures' })
   @ApiResponse({ status: 200, description: 'Boosted creatures retrieved successfully.' })
-  @ApiResponse({ status: 401, description: 'Unauthorized.' })
+  @ApiResponse({ status: 404, description: 'No boosted creatures found.' })
   async index(): Promise<BoostedCreature[]> {
     return await this.boostedCreatureService.findAll();
   }
