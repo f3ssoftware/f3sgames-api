@@ -94,14 +94,14 @@ describe('NewsTickerService', () => {
         affected: 1,
         generatedMaps: [],
       };
-  
+
       jest.spyOn(service, 'findOne').mockResolvedValue(mockNewsTicker as any);
       jest.spyOn(repository, 'softDelete').mockResolvedValue(mockUpdateResult);
-  
-      expect(await service.remove(1)).toEqual(mockUpdateResult);
+
+      const result = await service.remove(1);
+      expect(result).toEqual(mockUpdateResult);
       expect(service.findOne).toHaveBeenCalledWith({ where: { id: 1 } });
       expect(repository.softDelete).toHaveBeenCalledWith(1);
     });
   });
-  
 });
