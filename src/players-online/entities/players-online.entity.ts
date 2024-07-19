@@ -1,5 +1,6 @@
-import { Player } from 'src/players/player.entity';
-import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm';
+/* istanbul ignore file */
+import { Player } from "../../players/player.entity";
+import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from "typeorm";
 
 @Entity({ name: 'players_online' })
 export class PlayersOnline {

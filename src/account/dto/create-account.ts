@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsEmail,
@@ -9,7 +10,6 @@ import {
 } from 'class-validator';
 
 export class CreateAccountDto {
-  @ApiProperty()
   @IsEmail()
   @IsNotEmpty()
   email: string;
@@ -28,4 +28,13 @@ export class CreateAccountDto {
   @IsString()
   @IsNotEmpty()
   name: string;
+
+  id?: number;
+  premDays?: number;
+  premDaysPurchased?: number;
+  coins?: number;
+  coinsTransferable?: number;
+  tournamentCoins?: number;
+  creation?: number;
+  recruiter?: number;
 }

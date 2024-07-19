@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import { IsNotEmpty, IsEnum, IsNumber, IsString, IsOptional } from 'class-validator';
 import { Vocation } from '../enums/vocations.enum';
 
