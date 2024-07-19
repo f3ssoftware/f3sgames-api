@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, Logger } from '@nestjs/common';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { PaymentModule } from './order/order.module';
@@ -12,7 +12,8 @@ import { AuthModule } from './auth/auth.module';
 import { PlayersOnlineModule } from './players-online/players-online.module';
 import { PlayersOnline } from './players-online/entities/players-online.entity';
 import { NewsTickerModule } from './news-ticker/news-ticker.module';
-import { RashidModule } from './world-changes/rashid/rashid.module';
+import { HousesModule } from './houses/house.module';
+import { House } from './houses/house.entity';
 
 @Module({
   imports: [
@@ -42,6 +43,8 @@ import { RashidModule } from './world-changes/rashid/rashid.module';
       name: 'gameConnection',
       imports: [ConfigModule],
       useFactory: (configService: ConfigService): TypeOrmModuleOptions => {
+        const logger = new Logger('TypeORM');
+        logger.log('Connecting to game database');
         return {
           type: 'mariadb',
           host: configService.get<string>('GAME_DATABASE_HOST'),
@@ -49,7 +52,7 @@ import { RashidModule } from './world-changes/rashid/rashid.module';
           username: configService.get<string>('GAME_DATABASE_USERNAME'),
           password: configService.get<string>('GAME_DATABASE_PASSWORD'),
           database: configService.get<string>('GAME_DATABASE_NAME'),
-          entities: [Player, Account, PlayersOnline],
+          entities: [Player, Account, PlayersOnline, House],
           synchronize: false,
         };
       },
@@ -62,7 +65,7 @@ import { RashidModule } from './world-changes/rashid/rashid.module';
     AccountModule,
     AuthModule,
     PlayersOnlineModule,
-    RashidModule,
+    HousesModule,
   ],
 })
 export class AppModule {}
