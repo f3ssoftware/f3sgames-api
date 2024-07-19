@@ -7,19 +7,19 @@ services:
     ports:
       - '3000:3000'
     environment:
-      - PAGBANK_API_URL=${PAGBANK_API_URL}
-      - PAGBANK_API_TOKEN=${PAGBANK_API_TOKEN}
-      - DATABASE_HOST=postgres_db
-      - DATABASE_PORT=${DATABASE_PORT}
-      - DATABASE_USERNAME=${DATABASE_USERNAME}
-      - DATABASE_PASSWORD=${DATABASE_PASSWORD}
-      - DATABASE_NAME=${DATABASE_NAME}
-      - GAME_DATABASE_HOST=mariadb_db
-      - GAME_DATABASE_PORT=${GAME_DATABASE_PORT}
-      - GAME_DATABASE_USERNAME=${GAME_DATABASE_USERNAME}
-      - GAME_DATABASE_PASSWORD=${GAME_DATABASE_PASSWORD}
-      - GAME_DATABASE_NAME=${GAME_DATABASE_NAME}
-      - API_URL=${API_URL}
+      PAGBANK_API_URL: ${PAGBANK_API_URL}
+      PAGBANK_API_TOKEN: ${PAGBANK_API_TOKEN}
+      DATABASE_HOST: postgres_db
+      DATABASE_PORT: ${DATABASE_PORT}
+      DATABASE_USERNAME: ${DATABASE_USERNAME}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      DATABASE_NAME: ${DATABASE_NAME}
+      GAME_DATABASE_HOST: mariadb_db
+      GAME_DATABASE_PORT: ${GAME_DATABASE_PORT}
+      GAME_DATABASE_USERNAME: ${GAME_DATABASE_USERNAME}
+      GAME_DATABASE_PASSWORD: ${GAME_DATABASE_PASSWORD}
+      GAME_DATABASE_NAME: ${GAME_DATABASE_NAME}
+      API_URL: ${API_URL}
     depends_on:
       - postgres
       - mariadb
@@ -32,14 +32,14 @@ services:
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: Hayasak1!.,.
-      POSTGRES_DB: payment_db
+      POSTGRES_DB: websitedb
     volumes:
       - pgdata:/var/lib/postgresql/data
       - ./initdb/postgres:/docker-entrypoint-initdb.d
     ports:
       - '5432:5432'
     healthcheck:
-      test: [ 'CMD-SHELL', 'pg_isready -U admin -d payment_db' ]
+      test: ['CMD-SHELL', 'pg_isready -U admin -d websitedb']
       interval: 30s
       timeout: 10s
       retries: 5
@@ -60,16 +60,13 @@ services:
       - mariadbdata:/var/lib/mysql
       - ./initdb/mariadb:/docker-entrypoint-initdb.d
     healthcheck:
-      test:
-        [
-          'CMD-SHELL',
-          'mysqladmin ping -h localhost -u benedicto --password=428181Abc'
-        ]
+      test: ['CMD-SHELL', 'mysqladmin ping -h localhost -u benedicto --password=428181Abc']
       interval: 30s
       timeout: 10s
       retries: 5
     networks:
       - f3s_network
+
 volumes:
   pgdata:
   mariadbdata:

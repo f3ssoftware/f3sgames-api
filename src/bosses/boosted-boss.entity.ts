@@ -1,3 +1,5 @@
+ /* istanbul ignore file */
+
 import { Entity, Column, PrimaryColumn } from 'typeorm';
 
 @Entity('boosted_boss')

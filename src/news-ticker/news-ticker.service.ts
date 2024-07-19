@@ -39,7 +39,8 @@ export class NewsTickerService {
   }
 
   async remove(id: number) {
-    await this.newsTickerRepository.findOne({where: {id}});
-    this.newsTickerRepository.softDelete(id);
-  }
+    await this.newsTickerRepository.findOne({ where: { id } });
+    return this.newsTickerRepository.softDelete(id);
+  }  
+  
 }
