@@ -16,6 +16,7 @@ import { BoostedBoss } from './bosses/boosted-boss.entity';
 import { BoostedBossModule } from './bosses/boosted-boss.module';
 import { BoostedCreature } from './creatures/boosted-creature.entity';
 import { BoostedCreatureModule } from './creatures/boosted-creature.module';
+import { RashidModule } from './world-changes/rashid/rashid.module';
 
 @Module({
   imports: [
@@ -68,6 +69,7 @@ import { BoostedCreatureModule } from './creatures/boosted-creature.module';
     NewsTickerModule,
     BoostedBossModule,
     BoostedCreatureModule,
+    RashidModule,
   ],
 })
 export class AppModule {}
