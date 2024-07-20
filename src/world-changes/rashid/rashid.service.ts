@@ -4,8 +4,18 @@ import { RashidCities } from './enum/rashid-cities.enum';
 @Injectable()
 export class RashidLocationService {
   getRashidLocation(): RashidCities | null {
-    const today = new Date().getDay();
-    switch (today) {
+    const now = new Date();
+    const brasiliaOffset = -3; // Horário de Brasília (UTC-3)
+    const hour = now.getUTCHours() + brasiliaOffset;
+
+    let day = now.getUTCDay();
+
+    if (hour < 6) {
+      day = (day === 0) ? 6 : day - 1; /* Thing is... this NPC in game changes his city at the server save of the game,
+                                          which happens at 6 AM o'clock in Brasília, Brazil hour. */
+    }
+
+    switch (day) {
       case 0:
         return RashidCities.CARLIN; // Sunday
       case 1:

@@ -30,12 +30,12 @@ services:
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: Hayasak1!.,.
-      POSTGRES_DB: payment_db
+      POSTGRES_DB: websitedb
     volumes:
       - pgdata:/var/lib/postgresql/data
       - ./initdb/postgres:/docker-entrypoint-initdb.d
     healthcheck:
-      test: [ 'CMD-SHELL', 'pg_isready -U admin -d payment_db' ]
+      test: [ 'CMD-SHELL', 'pg_isready -U admin -d websitedb' ]
       interval: 30s
       timeout: 10s
       retries: 5
