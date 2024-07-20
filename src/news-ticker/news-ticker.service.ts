@@ -3,7 +3,7 @@ import { CreateNewsTickerDto } from './dto/create-news-ticker.dto';
 import { UpdateNewsTickerDto } from './dto/update-news-ticker.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { NewsTicker } from './entities/news-ticker.entity';
-import { FindOneOptions, Repository } from 'typeorm';
+import { FindOneOptions, Repository, UpdateResult } from 'typeorm';
 
 @Injectable()
 export class NewsTickerService {
@@ -38,8 +38,9 @@ export class NewsTickerService {
     return await this.newsTickerRepository.save(newsTicker);
   }
 
-  async remove(id: number) {
-    await this.newsTickerRepository.findOne({where: {id}});
-    this.newsTickerRepository.softDelete(id);
+  async remove(id: number): Promise<UpdateResult> {
+    await this.newsTickerRepository.findOne({ where: { id } });
+    return this.newsTickerRepository.softDelete(id);
   }
+ 
 }

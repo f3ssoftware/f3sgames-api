@@ -32,7 +32,7 @@ services:
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: Hayasak1!.,.
-      POSTGRES_DB: payment_db
+      POSTGRES_DB: websitedb
     volumes:
       - pgdata:/var/lib/postgresql/data
       - ./initdb/postgres:/docker-entrypoint-initdb.d
