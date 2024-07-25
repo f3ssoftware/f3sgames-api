@@ -9,4 +9,4 @@ import { NewsPostController } from './news-post.controller';
   providers: [NewsService],
   controllers: [NewsPostController],
 })
-export class NewsModule {}
+export class NewsPostModule {}
