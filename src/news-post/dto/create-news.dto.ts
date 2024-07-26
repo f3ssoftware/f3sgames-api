@@ -1,6 +1,6 @@
-import { IsString, IsNotEmpty, IsEnum, IsOptional, IsBoolean } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { NewsCategoryEnum } from '../enum/news-category.enum';
+import { IsNotEmpty, IsString, IsEnum, IsBoolean } from 'class-validator';
+import { NewsCategoryEnum } from '../enum/news-category.enum'
 
 export class CreateNewsDto {
   @ApiProperty({ example: 'Fixes and Changes' })
@@ -25,11 +25,10 @@ export class CreateNewsDto {
 
   @ApiProperty({ example: 'fixes_and_changes.jpg', required: false })
   @IsString()
-  @IsOptional()
   article_image?: string;
 
-  @ApiProperty({ example: true, required: false })
+  @ApiProperty({ example: true })
   @IsBoolean()
-  @IsOptional()
-  enabled?: boolean;
+  @IsNotEmpty()
+  enabled: boolean;
 }

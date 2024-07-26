@@ -1,3 +1,5 @@
+/* istanbul ignore file */
+
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn } from 'typeorm';
 import { NewsCategoryEnum } from './enum/news-category.enum';
 
