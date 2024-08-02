@@ -10,6 +10,7 @@ import {
 } from 'class-validator';
 
 export class CreateAccountDto {
+  @ApiProperty()
   @IsEmail()
   @IsNotEmpty()
   email: string;

@@ -21,13 +21,13 @@ export class HighscoresService {
 
     switch (vocation) {
       case Vocation.Sorcerer:
-        return [Vocation.Sorcerer, Vocation.MasterSorcerer];
+        return [Vocation.Sorcerer, Vocation['Master Sorcerer']];
       case Vocation.Druid:
-        return [Vocation.Druid, Vocation.ElderDruid];
+        return [Vocation.Druid, Vocation['Elder Druid']];
       case Vocation.Paladin:
-        return [Vocation.Paladin, Vocation.RoyalPaladin];
+        return [Vocation.Paladin, Vocation['Royal Paladin']];
       case Vocation.Knight:
-        return [Vocation.Knight, Vocation.EliteKnight];
+        return [Vocation.Knight, Vocation['Elite Knight']];
       default:
         return [vocation];
     }
