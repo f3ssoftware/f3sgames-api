@@ -20,6 +20,9 @@ import { BoostedCreatureModule } from './creatures/boosted-creature.module';
 import { HousesModule } from './houses/house.module';
 import { House } from './houses/house.entity';
 import { RashidModule } from './world-changes/rashid/rashid.module';
+import { NewsPost } from './news-post/news-post.entity';
+import { NewsPostController } from './news-post/news-post.controller';
+import { NewsPostModule } from './news-post/news-post.module';
 
 @Module({
   imports: [
@@ -37,6 +40,7 @@ import { RashidModule } from './world-changes/rashid/rashid.module';
           username: configService.get<string>('DATABASE_USERNAME'),
           password: configService.get<string>('DATABASE_PASSWORD'),
           database: configService.get<string>('DATABASE_NAME'),
+          entities: [NewsPost],
           autoLoadEntities: true,
           synchronize: true,
           logging: true
@@ -75,7 +79,8 @@ import { RashidModule } from './world-changes/rashid/rashid.module';
     BoostedBossModule,
     BoostedCreatureModule,
     HousesModule,
-    RashidModule
+    RashidModule,
+    NewsPostModule,
   ],
 })
 export class AppModule {}
