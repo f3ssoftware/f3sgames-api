@@ -10,6 +10,7 @@ import {
 } from 'typeorm';
 import { Account } from '../account/account.entity';
 import { PlayersOnline } from '../players-online/entities/players-online.entity';
+import { Auction } from './auctions/auction.entity';
 
 @Entity({ name: 'players' })
 @Unique(['name'])
@@ -19,6 +20,9 @@ export class Player {
 
   @Column()
   name: string;
+  
+  @Column()
+  group_id: number;
 
   @Column({ default: '' }) 
   conditions: string;
@@ -65,10 +69,33 @@ export class Player {
   @Column({ default: 0 })
   boss_points: number;
 
+  @Column({ default: 0 })
+  balance: number;
+
+  @Column({ default: 0 })
+  skull: number;
+
+  @Column({ default: 0 })
+  blessings: number;
+
+  @Column({ default: 0 })
+  prey_wildcard: number;
+
+  @Column({ default: 0 })
+  randomize_mount: number;
+
+  @Column({ default: 100 })
+  forge_dust_level: number;
+
+  @Column({ default: 0 })
+  task_points: number;
   @ManyToOne(() => Account, (account) => account.players)
   @JoinColumn({ name: 'account_id' })
   account: Account;
 
   @OneToOne(() => PlayersOnline, (playersOnline) => playersOnline.player)
   playersOnline: PlayersOnline;
+
+  @OneToOne(() => Auction, (auction) => auction.player)
+  auction: Auction;
 }
