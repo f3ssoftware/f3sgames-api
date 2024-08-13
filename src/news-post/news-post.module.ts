@@ -7,7 +7,7 @@ import { NewsService } from './news-post.service';
 import { NewsPostController } from './news-post.controller';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([NewsPost], 'paymentConnection')],
+  imports: [TypeOrmModule.forFeature([NewsPost], 'websiteConnection')],
   providers: [NewsService],
   controllers: [NewsPostController],
 })

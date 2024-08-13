@@ -23,6 +23,7 @@ import { RashidModule } from './world-changes/rashid/rashid.module';
 import { NewsPost } from './news-post/news-post.entity';
 import { NewsPostController } from './news-post/news-post.controller';
 import { NewsPostModule } from './news-post/news-post.module';
+import { AuctionModule } from './players/auctions/auction.module';
 
 @Module({
   imports: [
@@ -30,7 +31,7 @@ import { NewsPostModule } from './news-post/news-post.module';
       isGlobal: true,
     }),
     TypeOrmModule.forRootAsync({
-      name: 'paymentConnection',
+      name: 'websiteConnection',
       imports: [ConfigModule],
       useFactory: (configService: ConfigService): TypeOrmModuleOptions => {
         return {
@@ -81,6 +82,7 @@ import { NewsPostModule } from './news-post/news-post.module';
     HousesModule,
     RashidModule,
     NewsPostModule,
+    AuctionModule,
   ],
 })
 export class AppModule {}

@@ -7,10 +7,12 @@ import {
   JoinColumn,
   Unique,
   OneToOne,
+  OneToMany,
 } from 'typeorm';
 import { Account } from '../account/account.entity';
 import { PlayersOnline } from '../players-online/entities/players-online.entity';
 import { Auction } from './auctions/auction.entity';
+import { MarketOffer } from 'src/game-market/market-offer.entity';
 
 @Entity({ name: 'players' })
 @Unique(['name'])
@@ -98,4 +100,7 @@ export class Player {
 
   @OneToOne(() => Auction, (auction) => auction.player)
   auction: Auction;
+
+  @OneToMany(() => MarketOffer, (marketOffer) => marketOffer.player)
+  marketOffers: MarketOffer[];
 }

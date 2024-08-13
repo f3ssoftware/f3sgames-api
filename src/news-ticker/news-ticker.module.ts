@@ -5,7 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { NewsTicker } from './entities/news-ticker.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([NewsTicker], 'paymentConnection')],
+  imports: [TypeOrmModule.forFeature([NewsTicker], 'websiteConnection')],
   controllers: [NewsTickerController],
   providers: [NewsTickerService],
 })

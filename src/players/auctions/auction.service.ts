@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { Auction } from './auction.entity';
 import { Player } from '../player.entity';
 import { Account } from '../../account/account.entity';
+import { MarketOffer } from 'src/game-market/market-offer.entity';
 
 @Injectable()
 export class AuctionService {
@@ -14,6 +15,8 @@ export class AuctionService {
     private playerRepository: Repository<Player>,
     @InjectRepository(Account)
     private accountRepository: Repository<Account>,
+    @InjectRepository(MarketOffer)
+    private marketOfferRepository: Repository<MarketOffer>,
   ) {}
 
   async createAuction(playerId: number, startingPrice: number, endTime: Date): Promise<Auction> {
@@ -28,12 +31,27 @@ export class AuctionService {
     }
 
     const account = player.account;
+
     const existingAuction = await this.auctionRepository.findOne({
       where: { player, status: 'ongoing' },
     });
 
     if (existingAuction) {
       throw new BadRequestException('This player is already in an active auction');
+    }
+
+    const existingAuctionForAccount = await this.auctionRepository.findOne({
+      where: { player: { account: { id: account.id } }, status: 'ongoing' },
+    });
+
+    if (existingAuctionForAccount) {
+      throw new BadRequestException('This account already has a player in an active auction');
+    }
+
+    const activeOffer = await this.marketOfferRepository.findOne({ where: { player_id: player.id } });
+
+    if (activeOffer) {
+      throw new BadRequestException('Player has an active market offer and cannot be auctioned');
     }
 
     const auction = this.auctionRepository.create({
