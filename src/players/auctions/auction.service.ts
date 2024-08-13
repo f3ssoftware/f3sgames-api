@@ -61,7 +61,7 @@ export class AuctionService {
     await this.auctionRepository.save(auction);
 
     await this.updateCoins(auction.winnerAccount.id, auction.finalPrice - auction.companyFee);
-    await this.updateCoins(1, auction.companyFee); // Conta 1 representando a empresa
+    await this.updateCoins(1, auction.companyFee); // 1 represents our company
   }
 
   async updateCoins(accountId: number, coins: number): Promise<void> {
