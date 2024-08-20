@@ -17,7 +17,7 @@ export class PaymentService {
   private readonly logger = new Logger(PaymentService.name);
 
   constructor(
-    @InjectRepository(Order, 'paymentConnection')
+    @InjectRepository(Order, 'websiteConnection')
     private orderRepository: Repository<Order>,
     private playerService: PlayerService,
     private pagseguroIntegrationService: PagseguroIntegrationService,

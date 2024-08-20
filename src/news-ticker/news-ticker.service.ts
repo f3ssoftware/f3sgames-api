@@ -8,7 +8,7 @@ import { FindOneOptions, Repository, UpdateResult } from 'typeorm';
 @Injectable()
 export class NewsTickerService {
   constructor(
-    @InjectRepository(NewsTicker, 'paymentConnection')
+    @InjectRepository(NewsTicker, 'websiteConnection')
     private newsTickerRepository: Repository<NewsTicker>) {}
 
 

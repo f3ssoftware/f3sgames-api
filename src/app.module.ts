@@ -24,6 +24,17 @@ import { NewsPost } from './news-post/news-post.entity';
 import { NewsPostController } from './news-post/news-post.controller';
 import { NewsPostModule } from './news-post/news-post.module';
 import { AuctionModule } from './players/auctions/auction.module';
+import { Auction } from './players/auctions/auction.entity';
+import { GuildModule } from './guilds/guild.module';
+import { MarketOffer } from './game-market/market-offer.entity';
+import { MarketOfferModule } from './game-market/market-offer.module';
+import { GuildMembership } from './guilds/guild-membership/guild-membership.entity';
+import { GuildInvite } from './guilds/guild-invite/guild-invite.entity';
+import { Guild } from './guilds/guild.entity';
+import { PlayerNamelockModule } from './players/namelocks/player-namelock.module';
+import { PlayerNamelock } from './players/namelocks/player-namelock.entity';
+import { Bid } from './players/auctions/bids/bid.entity';
+import { BidModule } from './players/auctions/bids/bid.module';
 
 @Module({
   imports: [
@@ -41,8 +52,8 @@ import { AuctionModule } from './players/auctions/auction.module';
           username: configService.get<string>('DATABASE_USERNAME'),
           password: configService.get<string>('DATABASE_PASSWORD'),
           database: configService.get<string>('DATABASE_NAME'),
-          entities: [NewsPost],
-          autoLoadEntities: true,
+          entities: [NewsPost, Auction, Bid],
+          autoLoadEntities: false,
           synchronize: true,
           logging: true
         };
@@ -50,6 +61,7 @@ import { AuctionModule } from './players/auctions/auction.module';
       inject: [ConfigService],
 
     }),
+  
     TypeOrmModule.forRootAsync({
       name: 'gameConnection',
       imports: [ConfigModule],
@@ -63,11 +75,12 @@ import { AuctionModule } from './players/auctions/auction.module';
           username: configService.get<string>('GAME_DATABASE_USERNAME'),
           password: configService.get<string>('GAME_DATABASE_PASSWORD'),
           database: configService.get<string>('GAME_DATABASE_NAME'),
-          entities: [Player, Account, PlayersOnline, House, BoostedBoss, BoostedCreature],
+          entities: [Player, Account, PlayersOnline, House, BoostedBoss, BoostedCreature, MarketOffer, GuildMembership, GuildInvite, Guild, PlayerNamelock],
           synchronize: false,
         };
       },
       inject: [ConfigService],
+    
     }),
     PaymentModule,
     PlayerModule,
@@ -83,6 +96,10 @@ import { AuctionModule } from './players/auctions/auction.module';
     RashidModule,
     NewsPostModule,
     AuctionModule,
+    GuildModule,
+    MarketOfferModule,
+    PlayerNamelockModule,
+    BidModule,
   ],
 })
 export class AppModule {}

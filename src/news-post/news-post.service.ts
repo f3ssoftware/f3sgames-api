@@ -7,7 +7,7 @@ import { CreateNewsDto } from './dto/create-news.dto';
 @Injectable()
 export class NewsService {
   constructor(
-    @InjectRepository(NewsPost, 'paymentConnection')
+    @InjectRepository(NewsPost, 'websiteConnection')
     private newsRepository: Repository<NewsPost>
   ) {}
 

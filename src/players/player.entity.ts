@@ -13,6 +13,9 @@ import { Account } from '../account/account.entity';
 import { PlayersOnline } from '../players-online/entities/players-online.entity';
 import { Auction } from './auctions/auction.entity';
 import { MarketOffer } from 'src/game-market/market-offer.entity';
+import { GuildMembership } from 'src/guilds/guild-membership/guild-membership.entity';
+import { GuildInvite } from 'src/guilds/guild-invite/guild-invite.entity';
+import { PlayerNamelock } from './namelocks/player-namelock.entity';
 
 @Entity({ name: 'players' })
 @Unique(['name'])
@@ -22,11 +25,11 @@ export class Player {
 
   @Column()
   name: string;
-  
+
   @Column()
   group_id: number;
 
-  @Column({ default: '' }) 
+  @Column({ default: '' })
   conditions: string;
 
   @Column()
@@ -98,9 +101,15 @@ export class Player {
   @OneToOne(() => PlayersOnline, (playersOnline) => playersOnline.player)
   playersOnline: PlayersOnline;
 
-  @OneToOne(() => Auction, (auction) => auction.player)
-  auction: Auction;
-
-  @OneToMany(() => MarketOffer, (marketOffer) => marketOffer.player)
+  @OneToMany(() => MarketOffer, (marketOffer) => marketOffer.player) 
   marketOffers: MarketOffer[];
+
+  @OneToOne(() => GuildMembership, (guildMembership) => guildMembership.player)
+  guildMembership: GuildMembership;
+
+  @OneToMany(() => GuildInvite, (guildInvite) => guildInvite.player)
+  guildInvites: GuildInvite[];
+
+  @OneToOne(() => PlayerNamelock, (namelock) => namelock.player)
+  namelock: PlayerNamelock;
 }

@@ -8,7 +8,7 @@ import { AccountModule } from '../account/account.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Player, Account], 'gameConnection'), 
+    TypeOrmModule.forFeature([Player], 'gameConnection'), 
     AccountModule,
   ],
   controllers: [PlayerController],

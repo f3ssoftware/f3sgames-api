@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { MarketOffer } from './market-offer.entity';
+import { Bid } from './bid.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([MarketOffer], 'gameConnection'),
+    TypeOrmModule.forFeature([Bid], 'websiteConnection'), 
   ],
   exports: [TypeOrmModule],
 })
-export class MarketOfferModule {}
+export class BidModule {}

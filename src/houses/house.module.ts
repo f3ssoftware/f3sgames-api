@@ -8,5 +8,6 @@ import { House } from './house.entity';
   imports: [TypeOrmModule.forFeature([House], 'gameConnection')],
   controllers: [HousesController],
   providers: [HousesService],
+  exports: [HousesService],
 })
 export class HousesModule {}

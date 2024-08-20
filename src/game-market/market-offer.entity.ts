@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
 import { Player } from '../players/player.entity';
 
 @Entity({ name: 'market_offers' })
@@ -30,6 +30,7 @@ export class MarketOffer {
   @Column()
   tier: number;
 
-  @ManyToOne(() => Player)
+  @ManyToOne(() => Player, (player) => player.marketOffers) 
+  @JoinColumn({ name: 'player_id' })  
   player: Player;
 }
