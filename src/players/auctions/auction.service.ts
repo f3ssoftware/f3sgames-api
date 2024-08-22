@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
+import { Injectable, BadRequestException, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Auction } from './auction.entity';
@@ -11,102 +11,121 @@ import { Order } from 'src/houses/enums/order.enum';
 import { GuildMembership } from 'src/guilds/guild-membership/guild-membership.entity';
 import { GuildInvite } from 'src/guilds/guild-invite/guild-invite.entity';
 import { PlayerNamelock } from '../namelocks/player-namelock.entity';
+import * as moment from 'moment';
 
 @Injectable()
 export class AuctionService {
   constructor(
     @InjectRepository(Auction, 'websiteConnection')
     private auctionRepository: Repository<Auction>,
-    
+
     @InjectRepository(Player, 'gameConnection')
     private playerRepository: Repository<Player>,
-    
+
     @InjectRepository(Account, 'gameConnection')
     private accountRepository: Repository<Account>,
-    
+
     @InjectRepository(MarketOffer, 'gameConnection')
     private marketOfferRepository: Repository<MarketOffer>,
-    
+
     @InjectRepository(GuildMembership, 'gameConnection')
     private guildMembershipRepository: Repository<GuildMembership>,
-    
+
     @InjectRepository(GuildInvite, 'gameConnection')
     private guildInviteRepository: Repository<GuildInvite>,
-    
+
     @InjectRepository(PlayerNamelock, 'gameConnection')
     private playerNamelockRepository: Repository<PlayerNamelock>,
-    
+
     private housesService: HousesService,
   ) {}
 
-  async createAuction(playerId: number, startingPrice: number, endTime: Date): Promise<Auction> {
+  async createAuction(accountId: number, playerId: number, startingPrice: number, endTime: Date): Promise<Auction> {
     const player = await this.playerRepository.findOne({ where: { id: playerId }, relations: ['account'] });
-
+  
     if (!player) {
       throw new NotFoundException('Player not found');
     }
-
+  
+    if (player.account.id !== accountId) {
+      throw new ForbiddenException('You do not have permission to auction this player');
+    }
+  
+    // Ensure the endTime is at least 24 hours after the startTime
+    const startTime = new Date();
+    const timeDifference = endTime.getTime() - startTime.getTime();
+    const hoursDifference = timeDifference / (1000 * 60 * 60);
+    if (hoursDifference < 24) {
+      throw new BadRequestException('End time must be at least 24 hours after the start time');
+    }
+  
     if (player.skull !== 0) {
       throw new BadRequestException('Player with a skull cannot be auctioned');
     }
-
+  
     const houses = await this.housesService.getHouses({ town: 'All Towns', status: Status.ALL_STATES, order: Order.BY_NAME });
     const playerHouse = houses.find(house => house.owner === player.id);
-
+  
     const namelock = await this.playerNamelockRepository.findOne({ where: { playerId } });
     if (namelock) {
       throw new BadRequestException('Player has a namelock and cannot be auctioned');
     }
-
+  
     if (playerHouse) {
       throw new BadRequestException('Player with a house cannot be auctioned');
     }
-
+  
     const existingAuction = await this.auctionRepository.findOne({
       where: { playerId: player.id, status: 'ongoing' },
     });
-
+  
     if (existingAuction) {
       throw new BadRequestException('This player is already in an active auction');
     }
-
+  
     const activeOffer = await this.marketOfferRepository.findOne({ where: { player_id: player.id } });
-
+  
     if (activeOffer) {
       throw new BadRequestException('Player has an active market offer and cannot be auctioned');
     }
-
+  
     const guildMembership = await this.guildMembershipRepository.findOne({ where: { player: { id: playerId } } });
     if (guildMembership) {
       throw new BadRequestException('Player is a member of a guild and cannot be auctioned');
     }
-
+  
     const guildInvite = await this.guildInviteRepository.findOne({ where: { player: { id: playerId } } });
     if (guildInvite) {
       throw new BadRequestException('Player has pending guild invites and cannot be auctioned');
     }
-
+  
     const auction = this.auctionRepository.create({
       playerId: player.id,
       startingPrice,
-      startTime: new Date(),
+      startTime,
       endTime,
       status: 'ongoing',
     });
-
+  
     return this.auctionRepository.save(auction);
   }
+  
 
-  async finishAuction(auctionId: number): Promise<void> {
+  async finishAuction(accountId: number, auctionId: number): Promise<void> {
     const auction = await this.auctionRepository.findOne({ where: { id: auctionId }, relations: ['bids'] });
 
     if (!auction) {
       throw new NotFoundException('Auction not found');
     }
 
-    const player = await this.playerRepository.findOne({ where: { id: auction.playerId } });
+    const player = await this.playerRepository.findOne({ where: { id: auction.playerId }, relations: ['account'] });
     if (!player) {
       throw new NotFoundException('Player not found for this auction');
+    }
+
+    // For security, check if the player provided by the Front-End belongs to the same account that is logged in
+    if (player.account.id !== accountId) {
+      throw new ForbiddenException('You do not have permission to finish this auction');
     }
 
     const highestBid = auction.bids.reduce((prev, current) => (prev.amount > current.amount ? prev : current), auction.bids[0]);
@@ -125,7 +144,7 @@ export class AuctionService {
       await this.auctionRepository.save(auction);
 
       await this.updateCoins(bidder.id, auction.finalPrice - auction.companyFee);
-      await this.updateCoins(1, auction.companyFee); // 1 representa a conta da sua empresa
+      await this.updateCoins(1, auction.companyFee); // 1 represents your company account
     } else {
       throw new BadRequestException('No bids placed for this auction');
     }
