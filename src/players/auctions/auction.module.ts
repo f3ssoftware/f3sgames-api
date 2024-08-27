@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AuctionService } from './auction.service';
+import { AuctionService } from './services/auction.service';
 import { AuctionController } from './auction.controller';
 import { Auction } from './auction.entity';
 import { Player } from '../player.entity';
@@ -10,7 +10,9 @@ import { GuildMembership } from 'src/guilds/guild-membership/guild-membership.en
 import { GuildInvite } from 'src/guilds/guild-invite/guild-invite.entity';
 import { MarketOfferModule } from 'src/game-market/market-offer.module';
 import { PlayerNamelockModule } from 'src/players/namelocks/player-namelock.module';
-import { BidModule } from './bids/bid.module';
+import { BidModule } from './bids/bid.module'; 
+import { AuctionValidationService } from './services/auction-validation.service';
+import { CharacterTransferService } from './services/character-transfer.service';
 
 @Module({
   imports: [
@@ -21,7 +23,11 @@ import { BidModule } from './bids/bid.module';
     PlayerNamelockModule, 
     BidModule,
   ],
-  providers: [AuctionService],
+  providers: [
+    AuctionService,
+    AuctionValidationService, 
+    CharacterTransferService, 
+  ],
   controllers: [AuctionController],
   exports: [AuctionService],
 })

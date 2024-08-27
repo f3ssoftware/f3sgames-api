@@ -21,7 +21,6 @@ import { HousesModule } from './houses/house.module';
 import { House } from './houses/house.entity';
 import { RashidModule } from './world-changes/rashid/rashid.module';
 import { NewsPost } from './news-post/news-post.entity';
-import { NewsPostController } from './news-post/news-post.controller';
 import { NewsPostModule } from './news-post/news-post.module';
 import { AuctionModule } from './players/auctions/auction.module';
 import { Auction } from './players/auctions/auction.entity';
@@ -35,12 +34,14 @@ import { PlayerNamelockModule } from './players/namelocks/player-namelock.module
 import { PlayerNamelock } from './players/namelocks/player-namelock.entity';
 import { Bid } from './players/auctions/bids/bid.entity';
 import { BidModule } from './players/auctions/bids/bid.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    ScheduleModule.forRoot(),
     TypeOrmModule.forRootAsync({
       name: 'websiteConnection',
       imports: [ConfigModule],

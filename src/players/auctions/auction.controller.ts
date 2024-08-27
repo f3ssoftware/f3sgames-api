@@ -1,5 +1,5 @@
 import { Controller, Post, Param, Body, Get, Patch, ParseIntPipe, UseGuards, Req } from '@nestjs/common';
-import { AuctionService } from './auction.service';
+import { AuctionService } from './services/auction.service';
 import { CreateAuctionDto } from '../dto/create-auction.dto';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
@@ -25,10 +25,8 @@ export class AuctionController {
     const accountId = req.user.id;  // Assuming JWT provides the account ID here
 
     const startingPrice = createAuctionDto.startingPrice;
-    const startTime = moment.tz(moment(), 'America/Sao_Paulo').toDate();
-
-    // Convert endDate from string to Date using moment, including time
-    const endDate = moment.tz(createAuctionDto.endDate, 'DD/MM/YYYY HH:mm', 'America/Sao_Paulo').toDate();
+    const startTime = moment.utc().toDate(); 
+    const endDate = moment.utc(createAuctionDto.endDate, 'DD/MM/YYYY HH:mm').toDate(); 
 
     return this.auctionService.createAuction(accountId, playerId, startingPrice, endDate, startTime);
   }
@@ -73,5 +71,18 @@ export class AuctionController {
       bid,
       highestBid,
     };
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @ApiOperation({ summary: 'Finish auction transaction' })
+  @ApiResponse({ status: 200, description: 'Transaction finished successfully.' })
+  @ApiResponse({ status: 404, description: 'Auction or player not found.' })
+  @Post(':auctionId/finish-transaction')
+  async finishTransaction(
+      @Req() req,
+      @Param('auctionId', ParseIntPipe) auctionId: number
+  ) {
+      const accountId = req.user.id;  // Assuming JWT provides the account ID here
+      return this.auctionService.finishTransaction(auctionId, accountId);
   }
 }

@@ -35,7 +35,7 @@ export class Auction {
   createdAt: Date;
 
   @Column({ default: 'ongoing' })
-  status: 'ongoing' | 'finished' | 'canceled';
+  status: 'ongoing' | 'canceled' | 'completed' | 'pendent';
 
   @Column({ nullable: true })
   winnerAccountId: number;

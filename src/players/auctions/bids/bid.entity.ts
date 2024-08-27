@@ -7,7 +7,6 @@ import {
     CreateDateColumn,
   } from 'typeorm';
   import { Auction } from '../auction.entity';
-  import { Account } from '../../../account/account.entity';
   
   @Entity({ name: 'bids' })
   export class Bid {
@@ -21,7 +20,7 @@ import {
     @Column()
     bidderId: number;
   
-    @Column({ type: 'decimal', precision: 10, scale: 2 })
+    @Column({ type: 'integer', nullable: true })
     amount: number;
   
     @CreateDateColumn()
