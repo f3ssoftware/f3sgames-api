@@ -17,12 +17,12 @@ export class Auction {
   id: number;
 
   @Column({ name: 'player_id' })
-  playerId: number; 
+  playerId: number;
 
-  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  @Column({ type: 'int', nullable: true })
   startingPrice: number;
 
-  @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
+  @Column({ type: 'int', nullable: true })
   finalPrice: number;
 
   @Column()

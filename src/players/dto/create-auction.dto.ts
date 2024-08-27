@@ -1,14 +1,15 @@
-import { IsNumberString, IsString, Matches } from 'class-validator';
+import { IsInt, IsNumberString, IsString, Matches, Min } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateAuctionDto {
   @ApiProperty({
-    example: '100.00',
+    example: 100,
     description: 'The starting price for the auction',
-    type: String
+    type: Number
   })
-  @IsNumberString()
-  startingPrice: string;
+  @IsInt()
+  @Min(0)
+  startingPrice: number;
 
   @ApiProperty({
     example: '23/08/2024 15:30',

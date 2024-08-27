@@ -1,9 +1,10 @@
 import { Controller, Post, Param, Body, Get, Patch, ParseIntPipe, UseGuards, Req } from '@nestjs/common';
 import { AuctionService } from './auction.service';
 import { CreateAuctionDto } from '../dto/create-auction.dto';
-import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
-import * as moment from 'moment';
+import * as moment from 'moment-timezone';
+import { CreateBidDto } from './bids/dto/create-bid.dto';
 
 @Controller('auctions')
 @ApiBearerAuth('access-token')
@@ -23,12 +24,13 @@ export class AuctionController {
   ) {
     const accountId = req.user.id;  // Assuming JWT provides the account ID here
 
-    const startingPrice = parseFloat(createAuctionDto.startingPrice);
+    const startingPrice = createAuctionDto.startingPrice;
+    const startTime = moment.tz(moment(), 'America/Sao_Paulo').toDate();
 
     // Convert endDate from string to Date using moment, including time
-    const endDate = moment(createAuctionDto.endDate, 'DD/MM/YYYY HH:mm').toDate();
+    const endDate = moment.tz(createAuctionDto.endDate, 'DD/MM/YYYY HH:mm', 'America/Sao_Paulo').toDate();
 
-    return this.auctionService.createAuction(accountId, playerId, startingPrice, endDate);
+    return this.auctionService.createAuction(accountId, playerId, startingPrice, endDate, startTime);
   }
 
   @UseGuards(AuthGuard('jwt'))
@@ -49,5 +51,27 @@ export class AuctionController {
   @Get()
   async getAllAuctions() {
     return this.auctionService.getAllAuctions();
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @ApiOperation({ summary: 'Bid on an auction' })
+  @ApiResponse({ status: 201, description: 'Bid placed successfully.' })
+  @ApiResponse({ status: 403, description: 'You cannot bid on your own auction.' })
+  @ApiResponse({ status: 400, description: 'Bid must be equal or greater than the starting price.' })
+  @ApiResponse({ status: 404, description: 'Auction not found.' })
+  @ApiBody({ type: CreateBidDto })
+  @Post(':auctionId/bid')
+  async bidOnAuction(
+    @Req() req,
+    @Param('auctionId', ParseIntPipe) auctionId: number,
+    @Body('amount') amount: number,
+  ) {
+    const accountId = req.user.id;  // Assuming JWT provides the account ID here
+    const { bid, highestBid } = await this.auctionService.placeBid(accountId, auctionId, amount);
+    
+    return {
+      bid,
+      highestBid,
+    };
   }
 }
