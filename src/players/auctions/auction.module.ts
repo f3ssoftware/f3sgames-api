@@ -13,6 +13,7 @@ import { PlayerNamelockModule } from 'src/players/namelocks/player-namelock.modu
 import { BidModule } from './bids/bid.module'; 
 import { AuctionValidationService } from './services/auction-validation.service';
 import { CharacterTransferService } from './services/character-transfer.service';
+import { AuctionTimeService } from './services/auction-time.service';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { CharacterTransferService } from './services/character-transfer.service'
     AuctionService,
     AuctionValidationService, 
     CharacterTransferService, 
+    AuctionTimeService
   ],
   controllers: [AuctionController],
   exports: [AuctionService],

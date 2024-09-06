@@ -1,15 +1,20 @@
-import { Controller, Post, Param, Body, Get, Patch, ParseIntPipe, UseGuards, Req } from '@nestjs/common';
+import { Controller, Post, Param, Body, Get, Patch, ParseIntPipe, UseGuards, Req, Logger } from '@nestjs/common';
 import { AuctionService } from './services/auction.service';
 import { CreateAuctionDto } from '../dto/create-auction.dto';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
-import * as moment from 'moment-timezone';
+import { AuctionTimeService } from './services/auction-time.service';
 import { CreateBidDto } from './bids/dto/create-bid.dto';
 
 @Controller('auctions')
 @ApiBearerAuth('access-token')
 export class AuctionController {
-  constructor(private readonly auctionService: AuctionService) {}
+
+  private readonly logger = new Logger(AuctionController.name);
+
+  constructor(private readonly auctionService: AuctionService,
+    private readonly auctionTimeService: AuctionTimeService,
+  ) { }
 
   @UseGuards(AuthGuard('jwt'))
   @ApiOperation({ summary: 'Create a new auction' })
@@ -22,13 +27,14 @@ export class AuctionController {
     @Param('playerId', ParseIntPipe) playerId: number,
     @Body() createAuctionDto: CreateAuctionDto,
   ) {
-    const accountId = req.user.id;  // Assuming JWT provides the account ID here
-
-    const startingPrice = createAuctionDto.startingPrice;
-    const startTime = moment.utc().toDate(); 
-    const endDate = moment.utc(createAuctionDto.endDate, 'DD/MM/YYYY HH:mm').toDate(); 
-
-    return this.auctionService.createAuction(accountId, playerId, startingPrice, endDate, startTime);
+    const accountId = req.user.id;
+  
+    const startTimeUTC = this.auctionTimeService.calculateStartTime();
+    const endDateUTC = this.auctionTimeService.validateEndTime(startTimeUTC, createAuctionDto.endDate);
+  
+    this.logger.debug(`End date in UTC for the auction: ${endDateUTC.format('DD/MM/YYYY HH:mm')} UTC`);
+  
+    return this.auctionService.createAuction(accountId, playerId, createAuctionDto.startingPrice, endDateUTC.toDate(), startTimeUTC.toDate());
   }
 
   @UseGuards(AuthGuard('jwt'))
@@ -66,7 +72,7 @@ export class AuctionController {
   ) {
     const accountId = req.user.id;  // Assuming JWT provides the account ID here
     const { bid, highestBid } = await this.auctionService.placeBid(accountId, auctionId, amount);
-    
+
     return {
       bid,
       highestBid,
@@ -79,10 +85,10 @@ export class AuctionController {
   @ApiResponse({ status: 404, description: 'Auction or player not found.' })
   @Post(':auctionId/finish-transaction')
   async finishTransaction(
-      @Req() req,
-      @Param('auctionId', ParseIntPipe) auctionId: number
+    @Req() req,
+    @Param('auctionId', ParseIntPipe) auctionId: number
   ) {
-      const accountId = req.user.id;  // Assuming JWT provides the account ID here
-      return this.auctionService.finishTransaction(auctionId, accountId);
+    const accountId = req.user.id;  // Assuming JWT provides the account ID here
+    return this.auctionService.finishTransaction(auctionId, accountId);
   }
 }

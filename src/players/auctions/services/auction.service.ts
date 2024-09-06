@@ -15,7 +15,7 @@ import { AuctionValidationService } from './auction-validation.service';
 import { CharacterTransferService } from './character-transfer.service';
 import { BidService } from '../bids/bid.service';
 import { Bid } from '../bids/bid.entity';
-
+import { AuctionTimeService } from './auction-time.service';
 @Injectable()
 export class AuctionService {
 
@@ -47,7 +47,8 @@ export class AuctionService {
     private auctionValidationService: AuctionValidationService,
     private characterTransferService: CharacterTransferService,
     private bidService: BidService,
-  ) {}
+    private auctionTimeService: AuctionTimeService,
+  ) { }
 
   @Cron(CronExpression.EVERY_10_SECONDS)
   async handleCron() {
@@ -76,13 +77,16 @@ export class AuctionService {
           const bidder = await this.accountRepository.findOne({ where: { id: highestBid.bidderId } });
 
           auction.winnerAccountId = bidder.id;
-          await this.auctionRepository.save(auction); 
+          await this.auctionRepository.save(auction);
 
           if (bidder.coins < highestBid.amount) {
             this.logger.warn(`Auction ID: ${auction.id} has a winning bidder without enough coins. Marking as 'pendent'.`);
             auction.status = 'pendent';
+            await this.auctionRepository.save(auction);
+            this.scheduleCheckForCoins(auction); // Certifique-se de agendar para auctions pendentes imediatamente.
           } else {
             auction.status = 'completed';
+            this.logger.debug(`Auction ID: ${auction.id} status set to 'completed'. Initiating character transfer.`);
             await this.transferCharacterToWinner(auction);
           }
         } else {
@@ -93,19 +97,28 @@ export class AuctionService {
         this.logger.debug(`Auction ID: ${auction.id} status updated to ${auction.status}.`);
       }
     }
-  }
 
-  async createAuction(accountId: number, playerId: number, startingPrice: number, endTime: Date, startTime: Date): Promise<Auction> {
-    await this.auctionValidationService.validateAuctionCreation(accountId, playerId, startingPrice, endTime, startTime);
+    // Verifique se há leilões pendentes fora do loop de leilões em andamento
+    const pendingAuctions = await this.auctionRepository.find({
+      where: { status: 'pendent' },
+    });
 
+    for (const auction of pendingAuctions) {
+      this.logger.debug(`Auction ID: ${auction.id} is in 'pendent' status, scheduling coin check.`);
+      this.scheduleCheckForCoins(auction);
+    }
+}
+
+  async createAuction(accountId: number, playerId: number, startingPrice: number, endTimeUTC: Date, startTimeUTC: Date): Promise<Auction> {
     const auction = this.auctionRepository.create({
       playerId,
       startingPrice,
-      startTime,
-      endTime,
+      startTime: startTimeUTC,
+      endTime: endTimeUTC,
       status: 'ongoing',
     });
 
+    this.logger.debug(`Auction criado com sucesso: ${JSON.stringify(auction)}`);
     return this.auctionRepository.save(auction);
   }
 
@@ -174,16 +187,16 @@ export class AuctionService {
     this.logger.debug(`Old auctions deleted: ${deleteResult.affected} entries.`);
 
     // Reorder bid IDs using BidService after deleting old auctions and their bids
-    await this.bidService.reorderBidIds(); 
+    await this.bidService.reorderBidIds();
   }
-  
+
   async placeBid(accountId: number, auctionId: number, amount: number): Promise<{ bid: Bid; highestBid: number }> {
     const auction = await this.auctionRepository.findOne({ where: { id: auctionId }, relations: ['bids'] });
-  
+
     await this.auctionValidationService.validatePlaceBid(auction, accountId, amount);
-  
+
     const highestBid = auction.bids.length > 0 ? auction.bids.reduce((max, bid) => bid.amount > max.amount ? bid : max) : null;
-  
+
     if (highestBid && highestBid.amount < amount) {
       highestBid.amount = amount;
       highestBid.bidderId = accountId;
@@ -197,37 +210,53 @@ export class AuctionService {
     }
   }
 
-  async transferCharacterToWinner(auction: Auction): Promise<void> {
-    await this.characterTransferService.transferCharacterToWinner(auction);
-  }
+  async transferCharacterToWinner(auction: Auction): Promise<boolean> {
+    try {
+        await this.characterTransferService.transferCharacterToWinner(auction);
+        return true;
+    } catch (error) {
+        this.logger.error(`Erro ao transferir o personagem para o leilão ID ${auction.id}: ${error.message}`, error.stack);
+        return false;
+    }
+}
 
-  scheduleCheckForCoins(auction: Auction): void {
-    const checkInterval = 10000; // 1 hour in milliseconds
+scheduleCheckForCoins(auction: Auction): void {
+  const checkInterval = 3600000; // 1h in miliseconds
 
-    setTimeout(async () => {
+  this.logger.debug(`Scheduling check for coins for auction ID: ${auction.id} with interval of ${checkInterval} ms`);
+
+  setTimeout(async () => {
       const currentTime = new Date();
       const timeElapsed = currentTime.getTime() - auction.endTime.getTime();
       const hoursElapsed = timeElapsed / 3600000; // Converting milliseconds to hours
 
+      this.logger.debug(`Auction ID: ${auction.id}: Hours elapsed since end time: ${hoursElapsed}`);
+
       if (hoursElapsed >= 24) {
-        // 24 hours or more have passed and the transaction has not been completed
-        if (auction.status === 'pendent') {
-          this.logger.warn(`Auction ID: ${auction.id} is being canceled after 24 hours of inactivity.`);
-          auction.status = 'canceled';
-          await this.auctionRepository.save(auction);
-          this.logger.debug(`Auction ID: ${auction.id} status updated to canceled after 24 hours.`);
-        }
+          if (auction.status === 'pendent') {
+              this.logger.warn(`Auction ID: ${auction.id} is being canceled after 24 hours of inactivity.`);
+              auction.status = 'canceled';
+              await this.auctionRepository.save(auction);
+              this.logger.debug(`Auction ID: ${auction.id} status updated to canceled after 24 hours.`);
+          }
       } else {
-        // Recheck again after an hour if the time has not yet exceeded 24 hours
-        const updatedAuction = await this.auctionRepository.findOne({ where: { id: auction.id }, relations: ['bids'] });
-        if (updatedAuction && updatedAuction.status === 'pendent') {
-          this.logger.debug(`Re-checking coins for auction ID: ${auction.id}`);
-          this.transferCharacterToWinner(updatedAuction);
-        }
-        this.scheduleCheckForCoins(updatedAuction);
+          // Recheck again after 10 seconds if the time has not yet exceeded 24 hours
+          const updatedAuction = await this.auctionRepository.findOne({ where: { id: auction.id }, relations: ['bids'] });
+          if (updatedAuction && updatedAuction.status === 'pendent') {
+              this.logger.debug(`Re-checking coins for auction ID: ${auction.id}`);
+              const transferSuccess = await this.transferCharacterToWinner(updatedAuction);
+              if (transferSuccess) {
+                  updatedAuction.status = 'completed';
+                  await this.auctionRepository.save(updatedAuction);
+                  this.logger.debug(`Auction ID: ${auction.id} successfully transferred character and marked as completed.`);
+              } else {
+                  this.logger.debug(`Auction ID: ${auction.id} failed to transfer character, retrying.`);
+              }
+          }
+          this.scheduleCheckForCoins(updatedAuction);
       }
-    }, checkInterval);
-  }
+  }, checkInterval);
+}
 
   async finishTransaction(auctionId: number, accountId: number): Promise<void> {
     const auction = await this.auctionRepository.findOne({ where: { id: auctionId }, relations: ['bids'] });
