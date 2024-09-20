@@ -1,0 +1,23 @@
+export enum Country {
+    BR = 'Brazil',
+    US = 'United States',
+    GB = 'United Kingdom',
+    FR = 'France',
+    DE = 'Germany',
+    CN = 'China',
+    RU = 'Russia',
+    IN = 'India',
+    JP = 'Japan',
+    CA = 'Canada',
+    AU = 'Australia',
+    MX = 'Mexico',
+    IT = 'Italy',
+    ES = 'Spain',
+    AR = 'Argentina',
+    ZA = 'South Africa',
+    KR = 'South Korea',
+    NZ = 'New Zealand',
+    SA = 'Saudi Arabia',
+    EG = 'Egypt',
+  }
+  
