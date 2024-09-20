@@ -1,8 +1,6 @@
-/* istanbul ignore file */
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany, BeforeInsert } from 'typeorm';
 import { Player } from '../players/player.entity';
 import * as argon2 from 'argon2';
-
 
 @Entity({ name: 'accounts' })
 export class Account {

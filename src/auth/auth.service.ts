@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
 import * as argon2 from 'argon2';
@@ -8,6 +8,7 @@ import { AccountService } from 'src/account/account.service';
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger(AuthService.name);
   constructor(private accountService: AccountService, private jwtService: JwtService) { }
 
   async login(user: any) {
@@ -21,11 +22,18 @@ export class AuthService {
     let account: Account;
     try {
       account = await this.accountService.findOneOrFail({ where: { email } });
+      this.logger.debug(`Finded account for: ${email}`);
     } catch (error) {
+      this.logger.debug(`Not founded account for: ${email}`);
       return null;
     }
 
+    this.logger.debug(`Stored password: ${account.password}`);
+    this.logger.debug(`Given password: ${password}`);
+
     const isPasswordValid = await argon2.verify(account.password, password);
+
+    this.logger.debug(`Valid password: ${isPasswordValid}`);
     if (!isPasswordValid) return null;
     return account;
   }

@@ -7,9 +7,15 @@ import {
   JoinColumn,
   Unique,
   OneToOne,
+  OneToMany,
 } from 'typeorm';
 import { Account } from '../account/account.entity';
 import { PlayersOnline } from '../players-online/entities/players-online.entity';
+import { Auction } from './auctions/auction.entity';
+import { MarketOffer } from 'src/game-market/market-offer.entity';
+import { GuildMembership } from 'src/guilds/guild-membership/guild-membership.entity';
+import { GuildInvite } from 'src/guilds/guild-invite/guild-invite.entity';
+import { PlayerNamelock } from './namelocks/player-namelock.entity';
 
 @Entity({ name: 'players' })
 @Unique(['name'])
@@ -20,7 +26,10 @@ export class Player {
   @Column()
   name: string;
 
-  @Column({ default: '' }) 
+  @Column()
+  group_id: number;
+
+  @Column({ default: '' })
   conditions: string;
 
   @Column()
@@ -65,10 +74,42 @@ export class Player {
   @Column({ default: 0 })
   boss_points: number;
 
+  @Column({ default: 0 })
+  balance: number;
+
+  @Column({ default: 0 })
+  skull: number;
+
+  @Column({ default: 0 })
+  blessings: number;
+
+  @Column({ default: 0 })
+  prey_wildcard: number;
+
+  @Column({ default: 0 })
+  randomize_mount: number;
+
+  @Column({ default: 100 })
+  forge_dust_level: number;
+
+  @Column({ default: 0 })
+  task_points: number;
   @ManyToOne(() => Account, (account) => account.players)
   @JoinColumn({ name: 'account_id' })
   account: Account;
 
   @OneToOne(() => PlayersOnline, (playersOnline) => playersOnline.player)
   playersOnline: PlayersOnline;
+
+  @OneToMany(() => MarketOffer, (marketOffer) => marketOffer.player) 
+  marketOffers: MarketOffer[];
+
+  @OneToOne(() => GuildMembership, (guildMembership) => guildMembership.player)
+  guildMembership: GuildMembership;
+
+  @OneToMany(() => GuildInvite, (guildInvite) => guildInvite.player)
+  guildInvites: GuildInvite[];
+
+  @OneToOne(() => PlayerNamelock, (namelock) => namelock.player)
+  namelock: PlayerNamelock;
 }
