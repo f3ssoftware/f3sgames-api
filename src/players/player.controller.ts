@@ -12,21 +12,21 @@ import { PlayerResponseDto } from './dto/player-response.dto';
 export class PlayerController {
   private readonly logger = new Logger(PlayerController.name);
 
-  constructor(private readonly playerService: PlayerService) {}
+  constructor(private readonly playerService: PlayerService) { }
 
   @UseGuards(AuthGuard('jwt'))
-@Patch(':name/transferable-coins')
-@ApiOperation({ summary: 'Update transferable coins for a player' })
-@ApiResponse({ status: 200, description: 'Transferable coins updated successfully.' })
-@ApiResponse({ status: 404, description: 'Player not found.' })
-@ApiParam({ name: 'name', required: true, description: 'Player name' })
-@ApiBody({ schema: { type: 'object', properties: { coins: { type: 'number' } } } })
-async updateTransferableCoins(@Param('name') name: string, @Body('coins') coins: number): Promise<PlayerResponseDto> { 
-  this.logger.debug(`Entering updateTransferableCoins with player: ${name} and coins: ${coins}`);
-  const result = await this.playerService.updateTransferableCoins(name, coins);
-  this.logger.debug(`Exiting updateTransferableCoins with result: ${JSON.stringify(result)}`);
-  return result;
-}
+  @Patch(':name/transferable-coins')
+  @ApiOperation({ summary: 'Update transferable coins for a player' })
+  @ApiResponse({ status: 200, description: 'Transferable coins updated successfully.' })
+  @ApiResponse({ status: 404, description: 'Player not found.' })
+  @ApiParam({ name: 'name', required: true, description: 'Player name' })
+  @ApiBody({ schema: { type: 'object', properties: { coins: { type: 'number' } } } })
+  async updateTransferableCoins(@Param('name') name: string, @Body('coins') coins: number): Promise<PlayerResponseDto> {
+    this.logger.debug(`Entering updateTransferableCoins with player: ${name} and coins: ${coins}`);
+    const result = await this.playerService.updateTransferableCoins(name, coins);
+    this.logger.debug(`Exiting updateTransferableCoins with result: ${JSON.stringify(result)}`);
+    return result;
+  }
 
   @Get(':name')
   @ApiOperation({ summary: 'Get player by name' })

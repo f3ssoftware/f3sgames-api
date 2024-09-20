@@ -2,12 +2,14 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsEmail,
+  IsEnum,
   IsNotEmpty,
   IsString,
   Matches,
   MaxLength,
   MinLength,
 } from 'class-validator';
+import { Country } from '../../Shared/countries.enum'; 
 
 export class CreateAccountDto {
   @ApiProperty()
@@ -29,6 +31,14 @@ export class CreateAccountDto {
   @IsString()
   @IsNotEmpty()
   name: string;
+
+  @ApiProperty({
+    description: 'Country of the user',
+    enum: Country,
+  })
+  @IsEnum(Country)
+  @IsNotEmpty()
+  country: Country;
 
   id?: number;
   premDays?: number;
