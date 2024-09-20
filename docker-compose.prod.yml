@@ -1,0 +1,97 @@
+version: '3.8'
+
+services:
+  nestjs-api:
+    build: .
+    container_name: nestjs_api
+    network_mode: host
+    environment:
+      - PAGBANK_API_URL=${PAGBANK_API_URL}
+      - PAGBANK_API_TOKEN=${PAGBANK_API_TOKEN}
+      - DATABASE_HOST=localhost
+      - DATABASE_PORT=${DATABASE_PORT}
+      - DATABASE_USERNAME=${DATABASE_USERNAME}
+      - DATABASE_PASSWORD=${DATABASE_PASSWORD}
+      - DATABASE_NAME=${DATABASE_NAME}
+      - GAME_DATABASE_HOST=localhost
+      - GAME_DATABASE_PORT=${GAME_DATABASE_PORT}
+      - GAME_DATABASE_USERNAME=${GAME_DATABASE_USERNAME}
+      - GAME_DATABASE_PASSWORD=${GAME_DATABASE_PASSWORD}
+      - GAME_DATABASE_NAME=${GAME_DATABASE_NAME}
+      - API_URL=${API_URL}
+    depends_on:
+      - postgres
+      # - mariadb
+
+  postgres:
+    image: postgres:14
+    container_name: postgres_db
+    network_mode: host
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: Hayasak1!.,.
+      POSTGRES_DB: payment_db
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./initdb/postgres:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U admin -d payment_db']
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # mariadb:
+  #   image: mariadb:10.5
+  #   container_name: mariadb_db
+  #   network_mode: host
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: sua_senha_root
+  #     MYSQL_DATABASE: wkotserv_db
+  #     MYSQL_USER: benedicto
+  #     MYSQL_PASSWORD: 428181Abc
+  #   volumes:
+  #     - mariadbdata:/var/lib/mysql
+  #     - ./initdb/mariadb:/docker-entrypoint-initdb.d
+  #   healthcheck:
+  #     test:
+  #       [
+  #         'CMD-SHELL',
+  #         'mysqladmin ping -h localhost -u benedicto --password=428181Abc'
+  #       ]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 5
+
+volumes:
+  pgdata:
+  mariadbdata:
+
+    # mariadb:
+    #   image: mariadb:10.5
+    #   container_name: mariadb_db
+    #   environment:
+    #     MYSQL_ROOT_PASSWORD: sua_senha_root
+    #     MYSQL_DATABASE: wkotserv_db
+    #     MYSQL_USER: admin
+    #     MYSQL_PASSWORD: Hayasak1!.,.
+    #   ports:
+    #     - '3307:3306'
+    #   volumes:
+    #     - mariadbdata:/var/lib/mysql
+    #     - ./initdb/mariadb:/docker-entrypoint-initdb.d
+    #   healthcheck:
+    #     test:
+    #       [
+    #         'CMD',
+    #         'mysqladmin',
+    #         'ping',
+    #         '-h',
+    #         'localhost',
+    #         '-u',
+    #         'admin',
+    #         '--password=Hayasak1!.,.',
+    #       ]
+    #     interval: 30s
+    #     timeout: 10s
+    #     retries: 5
+    #   network_mode: 'bridge'

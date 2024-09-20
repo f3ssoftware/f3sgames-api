@@ -1,9 +1,9 @@
 import 'tsconfig-paths/register';
 import { createConnection } from 'typeorm';
 import { Account } from './account.entity';
-import { Player } from '../players/player.entity'; // Certifique-se de importar todas as entidades necessárias
-import { PlayersOnline } from '../players-online/entities/players-online.entity'; // Importação necessária
-import { hashSync } from 'bcrypt';
+import { Player } from '../players/player.entity';
+import { PlayersOnline } from '../players-online/entities/players-online.entity'; 
+import { hashSync } from 'bcryptjs';
 import * as dotenv from 'dotenv';
 
 dotenv.config();
@@ -16,7 +16,7 @@ async function updatePassword() {
     username: process.env.GAME_DATABASE_USERNAME,
     password: process.env.GAME_DATABASE_PASSWORD,
     database: process.env.GAME_DATABASE_NAME,
-    entities: [Account, Player, PlayersOnline], 
+    entities: [Account, Player, PlayersOnline],
   });
 
   const accountRepository = connection.getRepository(Account);
