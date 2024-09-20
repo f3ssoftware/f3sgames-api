@@ -50,12 +50,12 @@ export class AuctionService {
     private auctionTimeService: AuctionTimeService,
   ) { }
 
-  @Cron(CronExpression.EVERY_10_SECONDS)
-  async handleCron() {
-    await this.checkAuctionsStatus();
-    await this.deleteOldAuctions();
-    await this.bidService.cleanUpBids();
-  }
+  // @Cron(CronExpression.EVERY_10_SECONDS)
+  // async handleCron() {
+  //   await this.checkAuctionsStatus();
+  //   await this.deleteOldAuctions();
+  //   await this.bidService.cleanUpBids();
+  // }
 
   async checkAuctionsStatus(): Promise<void> {
     const now = new Date();
