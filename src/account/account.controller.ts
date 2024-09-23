@@ -60,4 +60,14 @@ export class AccountController {
   async destroy(@Param("id") id: number) {
     await this.accountService.destroy(id);
   }
+
+  @ApiOperation({ summary: 'Create new account with a player' })
+  @Post('create-with-player')
+  @ApiOperation({ summary: 'Create an account with a player' })
+  @ApiResponse({ status: 201, description: 'Account and player created successfully.' })
+  @ApiResponse({ status: 400, description: 'Bad request.' })
+  async createAccountWithPlayer(@Body() createAccountDto: CreateAccountDto) {
+    return this.accountService.createAccountWithPlayer(createAccountDto);
+  }
+  
 }

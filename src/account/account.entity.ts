@@ -16,6 +16,9 @@ export class Account {
   @Column()
   email: string;
 
+  @Column({ name: 'country', type: 'varchar', length: 2 })
+  country: string;
+
   @Column({ name: 'premdays' })
   premDays: number;
 
