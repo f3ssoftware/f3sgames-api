@@ -12,14 +12,29 @@ export class NewsTickerService {
     private newsTickerRepository: Repository<NewsTicker>) {}
 
 
-  async create(newsTickerData: CreateNewsTickerDto) {
-    const newsTicker = this.newsTickerRepository.create(newsTickerData);   
-    return await this.newsTickerRepository.save(newsTicker);
-  }
+    async create(newsTickerData: CreateNewsTickerDto) {
+      // Check if the are more than 5 news tickers with enabled with true
+      const activeNewsTickers = await this.newsTickerRepository.find({
+        where: { enabled: true },
+        order: { createdAt: 'ASC' }
+      });
+  
+      // If there are more than 5 news tickers activated, it takes the older ones and put enabled as false
+      if (activeNewsTickers.length >= 5) {
+        const oldestTicker = activeNewsTickers[0];
+        oldestTicker.enabled = false;
+        await this.newsTickerRepository.save(oldestTicker);
+      }
+  
+      const newsTicker = this.newsTickerRepository.create({ ...newsTickerData, enabled: true });
+      return await this.newsTickerRepository.save(newsTicker);
+    }
 
   async findAll() {
+
     return await this.newsTickerRepository.find({
-      select:['id', 'createdAt', 'title', 'author', 'description']
+      where: { enabled: true },
+      order: { createdAt: 'DESC' }
     });
   }
 

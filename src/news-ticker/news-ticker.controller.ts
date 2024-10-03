@@ -13,17 +13,14 @@ export class NewsTickerController {
   @ApiOperation({ summary: 'Create new news ticker' })
   @ApiResponse({ status: 200, description: 'News Ticker created.' })
   @ApiResponse({ status: 404, description: 'Problem to create.' })
-  @UseGuards(AuthGuard('jwt'))
   @Post()
   async create(@Body() newsTickerData: CreateNewsTickerDto) {
     return await this.newsTickerService.create(newsTickerData);
   }
 
-  @ApiBearerAuth()
   @ApiOperation({ summary: 'Find all news ticker' })
   @ApiResponse({ status: 200, description: 'News Ticker found.' })
   @ApiResponse({ status: 404, description: 'News ticker not found.' })
-  @UseGuards(AuthGuard('jwt'))
   @Get()
   async findAll() {
     return await this.newsTickerService.findAll();

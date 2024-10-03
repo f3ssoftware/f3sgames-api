@@ -35,6 +35,7 @@ import { PlayerNamelock } from './players/namelocks/player-namelock.entity';
 import { Bid } from './players/auctions/bids/bid.entity';
 import { BidModule } from './players/auctions/bids/bid.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { NewsTicker } from './news-ticker/entities/news-ticker.entity';
 
 @Module({
   imports: [
@@ -53,7 +54,7 @@ import { ScheduleModule } from '@nestjs/schedule';
           username: configService.get<string>('DATABASE_USERNAME'),
           password: configService.get<string>('DATABASE_PASSWORD'),
           database: configService.get<string>('DATABASE_NAME'),
-          entities: [NewsPost, Auction, Bid],
+          entities: [NewsPost, Auction, Bid, NewsTicker],
           autoLoadEntities: false,
           synchronize: true,
           logging: true
