@@ -5,7 +5,7 @@ export class NewsTicker {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @CreateDateColumn({type: 'timestamp'})
+    @CreateDateColumn({ type: 'timestamp' })
     createdAt: Date;
 
     @Column()
@@ -16,4 +16,7 @@ export class NewsTicker {
 
     @Column()
     description: string;
+
+    @Column({ default: true })
+    enabled: boolean;
 }
