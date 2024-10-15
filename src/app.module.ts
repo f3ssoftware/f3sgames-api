@@ -36,6 +36,8 @@ import { Bid } from './players/auctions/bids/bid.entity';
 import { BidModule } from './players/auctions/bids/bid.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { NewsTicker } from './news-ticker/entities/news-ticker.entity';
+import { AdminAccountModule } from './Admin Account/admin-account.module';
+import { AdminAccount } from './Admin Account/admin-account.entity';
 
 @Module({
   imports: [
@@ -54,7 +56,7 @@ import { NewsTicker } from './news-ticker/entities/news-ticker.entity';
           username: configService.get<string>('DATABASE_USERNAME'),
           password: configService.get<string>('DATABASE_PASSWORD'),
           database: configService.get<string>('DATABASE_NAME'),
-          entities: [NewsPost, Auction, Bid, NewsTicker],
+          entities: [NewsPost, Auction, Bid, NewsTicker, AdminAccount],
           autoLoadEntities: false,
           synchronize: true,
           logging: true
@@ -102,6 +104,7 @@ import { NewsTicker } from './news-ticker/entities/news-ticker.entity';
     MarketOfferModule,
     PlayerNamelockModule,
     BidModule,
+    AdminAccountModule,
   ],
 })
 export class AppModule {}

@@ -1,35 +1,52 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { CreateNewsTickerDto } from './dto/create-news-ticker.dto';
 import { UpdateNewsTickerDto } from './dto/update-news-ticker.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { NewsTicker } from './entities/news-ticker.entity';
 import { FindOneOptions, Repository, UpdateResult } from 'typeorm';
+import { Account } from 'src/account/account.entity';
+import { AdminAccount } from '../Admin Account/admin-account.entity';
 
 @Injectable()
 export class NewsTickerService {
   constructor(
     @InjectRepository(NewsTicker, 'websiteConnection')
-    private newsTickerRepository: Repository<NewsTicker>) {}
+    private newsTickerRepository: Repository<NewsTicker>,
+    
+    @InjectRepository(Account, 'gameConnection') 
+    private accountRepository: Repository<Account>,
 
+    @InjectRepository(AdminAccount, 'websiteConnection') 
+    private adminAccountRepository: Repository<AdminAccount>,
+  ) {}
 
-    async create(newsTickerData: CreateNewsTickerDto) {
-      // Check if the are more than 5 news tickers with enabled with true
+    async create(newsTickerData: CreateNewsTickerDto, accountId: number) {
+   
+      const account = await this.accountRepository.findOne({ where: { id: accountId } });
+      if (!account) {
+        throw new NotFoundException('Account not found');
+      }
+  
+      const admin = await this.adminAccountRepository.findOne({ where: { account_id: accountId } });
+      if (!admin) {
+        throw new UnauthorizedException('Only admin accounts can create news tickers');
+      }
+  
       const activeNewsTickers = await this.newsTickerRepository.find({
         where: { enabled: true },
         order: { createdAt: 'ASC' }
       });
   
-      // If there are more than 5 news tickers activated, it takes the older ones and put enabled as false
       if (activeNewsTickers.length >= 5) {
         const oldestTicker = activeNewsTickers[0];
         oldestTicker.enabled = false;
         await this.newsTickerRepository.save(oldestTicker);
       }
-  
+
       const newsTicker = this.newsTickerRepository.create({ ...newsTickerData, enabled: true });
       return await this.newsTickerRepository.save(newsTicker);
     }
-
+  
   async findAll() {
 
     return await this.newsTickerRepository.find({

@@ -1,9 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req } from '@nestjs/common';
 import { NewsTickerService } from './news-ticker.service';
 import { CreateNewsTickerDto } from './dto/create-news-ticker.dto';
 import { UpdateNewsTickerDto } from './dto/update-news-ticker.dto';
 import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
+import { Request } from 'express';
 
 @Controller('news-ticker')
 export class NewsTickerController {
@@ -13,9 +14,11 @@ export class NewsTickerController {
   @ApiOperation({ summary: 'Create new news ticker' })
   @ApiResponse({ status: 200, description: 'News Ticker created.' })
   @ApiResponse({ status: 404, description: 'Problem to create.' })
+  @UseGuards(AuthGuard('jwt'))
   @Post()
-  async create(@Body() newsTickerData: CreateNewsTickerDto) {
-    return await this.newsTickerService.create(newsTickerData);
+  async create(@Body() newsTickerData: CreateNewsTickerDto, @Req() req: Request) {
+    const accountId = req.user['accountId']; 
+    return await this.newsTickerService.create(newsTickerData, accountId);
   }
 
   @ApiOperation({ summary: 'Find all news ticker' })
@@ -33,7 +36,7 @@ export class NewsTickerController {
   @UseGuards(AuthGuard('jwt'))
   @Get(':id')
   async findOne(@Param('id') id: number) {
-    return await this.newsTickerService.findOne({where: {id}});
+    return await this.newsTickerService.findOne({ where: { id } });
   }
 
   @ApiBearerAuth()
