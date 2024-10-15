@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsEmail,
@@ -12,8 +13,8 @@ import {
   IsOptional,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { Card } from 'src/pagseguro-integration/dto/pagseguro-card.dto';
-import { Address } from 'src/pagseguro-integration/dto/pagseguro-address.dto';
+import { Card } from '../../pagseguro-integration/dto/pagseguro-card.dto';
+import { Address } from '../../pagseguro-integration/dto/pagseguro-address.dto';
 
 class Phone {
   @ApiProperty({ example: '55' })

@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { HighscoresService } from './highscores.service';
 import { ApiTags, ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
-import { Vocation } from 'src/players/enums/vocations.enum';
+import { Vocation } from '../players/enums/vocations.enum';
 import { Category } from './enum/category.enum';
 import { VocationFilter } from './dto/vocationFilter.dto';
 

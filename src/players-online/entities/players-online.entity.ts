@@ -1,16 +1,16 @@
-import { Player } from "src/players/player.entity";
+/* istanbul ignore file */
+import { Player } from "../../players/player.entity";
 import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from "typeorm";
 
-@Entity({ name: "players_online" }
-)
+@Entity({ name: 'players_online' })
 export class PlayersOnline {
-    @PrimaryColumn()
-    id: number;
+  @PrimaryColumn()
+  player_id: number;
 
-    @OneToOne(() => Player, (player) => player.playersOnline)
-    @JoinColumn({ name: 'player_id' })
-    player: Player;
+  @OneToOne(() => Player, (player) => player.playersOnline)
+  @JoinColumn({ name: 'player_id' })
+  player: Player;
 
-    @Column()
-    online: boolean;
+  @Column()
+  online: boolean;
 }

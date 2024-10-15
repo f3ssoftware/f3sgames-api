@@ -1,4 +1,5 @@
-import { Module } from '@nestjs/common';
+/* istanbul ignore file */
+import { Module, Logger } from '@nestjs/common';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { PaymentModule } from './order/order.module';
@@ -11,49 +12,79 @@ import { AccountModule } from './account/account.module';
 import { AuthModule } from './auth/auth.module';
 import { PlayersOnlineModule } from './players-online/players-online.module';
 import { PlayersOnline } from './players-online/entities/players-online.entity';
+import { NewsTickerModule } from './news-ticker/news-ticker.module';
+import { BoostedBoss } from './bosses/boosted-boss.entity';
+import { BoostedBossModule } from './bosses/boosted-boss.module';
+import { BoostedCreature } from './creatures/boosted-creature.entity';
+import { BoostedCreatureModule } from './creatures/boosted-creature.module';
+import { HousesModule } from './houses/house.module';
+import { House } from './houses/house.entity';
+import { RashidModule } from './world-changes/rashid/rashid.module';
+import { NewsPost } from './news-post/news-post.entity';
+import { NewsPostModule } from './news-post/news-post.module';
+import { AuctionModule } from './players/auctions/auction.module';
+import { Auction } from './players/auctions/auction.entity';
+import { GuildModule } from './guilds/guild.module';
+import { MarketOffer } from './game-market/market-offer.entity';
+import { MarketOfferModule } from './game-market/market-offer.module';
+import { GuildMembership } from './guilds/guild-membership/guild-membership.entity';
+import { GuildInvite } from './guilds/guild-invite/guild-invite.entity';
+import { Guild } from './guilds/guild.entity';
+import { PlayerNamelockModule } from './players/namelocks/player-namelock.module';
+import { PlayerNamelock } from './players/namelocks/player-namelock.entity';
+import { Bid } from './players/auctions/bids/bid.entity';
+import { BidModule } from './players/auctions/bids/bid.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { NewsTicker } from './news-ticker/entities/news-ticker.entity';
+import { AdminAccountModule } from './Admin Account/admin-account.module';
+import { AdminAccount } from './Admin Account/admin-account.entity';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    ScheduleModule.forRoot(),
     TypeOrmModule.forRootAsync({
-      name: 'paymentConnection',
+      name: 'websiteConnection',
       imports: [ConfigModule],
       useFactory: (configService: ConfigService): TypeOrmModuleOptions => {
-        const paymentConfig: TypeOrmModuleOptions = {
+        return {
           type: 'postgres',
           host: configService.get<string>('DATABASE_HOST'),
           port: configService.get<number>('DATABASE_PORT'),
           username: configService.get<string>('DATABASE_USERNAME'),
           password: configService.get<string>('DATABASE_PASSWORD'),
           database: configService.get<string>('DATABASE_NAME'),
-          autoLoadEntities: true,
+          entities: [NewsPost, Auction, Bid, NewsTicker, AdminAccount],
+          autoLoadEntities: false,
           synchronize: true,
+          logging: true
         };
-        console.log('Payment Database Config:', paymentConfig);
-        return paymentConfig;
       },
       inject: [ConfigService],
+
     }),
+  
     TypeOrmModule.forRootAsync({
       name: 'gameConnection',
       imports: [ConfigModule],
       useFactory: (configService: ConfigService): TypeOrmModuleOptions => {
-        const gameConfig: TypeOrmModuleOptions = {
+        const logger = new Logger('TypeORM');
+        logger.log('Connecting to game database');
+        return {
           type: 'mariadb',
           host: configService.get<string>('GAME_DATABASE_HOST'),
           port: configService.get<number>('GAME_DATABASE_PORT'),
           username: configService.get<string>('GAME_DATABASE_USERNAME'),
           password: configService.get<string>('GAME_DATABASE_PASSWORD'),
           database: configService.get<string>('GAME_DATABASE_NAME'),
-          entities: [Player, Account, PlayersOnline],
+          entities: [Player, Account, PlayersOnline, House, BoostedBoss, BoostedCreature, MarketOffer, GuildMembership, GuildInvite, Guild, PlayerNamelock],
           synchronize: false,
         };
-        console.log('Game Database Config:', gameConfig);
-        return gameConfig;
       },
       inject: [ConfigService],
+    
     }),
     PaymentModule,
     PlayerModule,
@@ -62,6 +93,18 @@ import { PlayersOnline } from './players-online/entities/players-online.entity';
     AccountModule,
     AuthModule,
     PlayersOnlineModule,
+    NewsTickerModule,
+    BoostedBossModule,
+    BoostedCreatureModule,
+    HousesModule,
+    RashidModule,
+    NewsPostModule,
+    AuctionModule,
+    GuildModule,
+    MarketOfferModule,
+    PlayerNamelockModule,
+    BidModule,
+    AdminAccountModule,
   ],
 })
 export class AppModule {}

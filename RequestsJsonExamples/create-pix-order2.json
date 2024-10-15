@@ -1,0 +1,27 @@
+// URL: `https://sandbox.api.pagseguro.com/orders`
+{
+  "notification_urls": ["https://pagamento.f3ssoftware.com/webhook"],
+  "items": [{ "name": "Tibia Coin", "quantity": 1250, "unit_amount": 1 }],
+  "reference_id": "c9be1019-1816-4eb5-9661-d568d8606c58",
+  "qr_codes": [{ "amount": { "value": 100 } }],
+  "customer": {
+    "name": "Felipe Sampaio Marques Souza",
+    "email": "fmarques899@gmail.com",
+    "tax_id": "04718287189",
+    "phones": [
+      { "type": "MOBILE", "country": "55", "area": "61", "number": "999999999" }
+    ]
+  },
+  "shipping": {
+    "address": {
+      "street": "Largo Fernando Gallego",
+      "number": "20",
+      "complement": "N/A",
+      "locality": "Centro",
+      "city": "São Paulo",
+      "region_code": "SP",
+      "postal_code": "01007070",
+      "country": "BRA"
+    }
+  }
+}

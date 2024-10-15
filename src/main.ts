@@ -1,10 +1,11 @@
+/* istanbul ignore file */
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as dotenv from 'dotenv';
 import { ValidationPipe } from '@nestjs/common';
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
-import * as cors from 'cors';
+import 'reflect-metadata';
 
 dotenv.config();
 
@@ -15,26 +16,24 @@ async function bootstrap() {
 
   app.enableCors({
     origin: '*',
-    // origin: [
-    //   'https://f3s-checkout.netlify.app/',
-    //   'https://donate.whitekingdomot.com',
-    //   'http://donate.whitekingdomot.com',
-    // ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: false,
   });
 
-  // Setup Swagger
   const config = new DocumentBuilder()
     .setTitle('F3S Games API')
     .setDescription('API for F3S Games services and applications')
     .setVersion('1.0')
     .addTag('f3sgames')
+    .addBearerAuth(
+      { type: 'http', scheme: 'bearer', bearerFormat: 'JWT' },
+      'access-token',
+    )
     .build();
+
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document);
 
-  // Apply global validation pipe
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -43,9 +42,9 @@ async function bootstrap() {
     }),
   );
 
-  // Apply global exception filter
   app.useGlobalFilters(new AllExceptionsFilter());
 
   await app.listen(3000);
+  console.log(`Application is running on: ${await app.getUrl()}`);
 }
 bootstrap();

@@ -21,7 +21,7 @@ services:
       - API_URL=${API_URL}
     depends_on:
       - postgres
-      # - mariadb
+      - mariadb
 
   postgres:
     image: postgres:14
@@ -30,41 +30,42 @@ services:
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: Hayasak1!.,.
-      POSTGRES_DB: payment_db
+      POSTGRES_DB: websitedb
     volumes:
       - pgdata:/var/lib/postgresql/data
       - ./initdb/postgres:/docker-entrypoint-initdb.d
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U admin -d payment_db']
+      test: [ 'CMD-SHELL', 'pg_isready -U admin -d websitedb' ]
       interval: 30s
       timeout: 10s
       retries: 5
 
-  # mariadb:
-  #   image: mariadb:10.5
-  #   container_name: mariadb_db
-  #   network_mode: host
-  #   environment:
-  #     MYSQL_ROOT_PASSWORD: sua_senha_root
-  #     MYSQL_DATABASE: wkotserv_db
-  #     MYSQL_USER: benedicto
-  #     MYSQL_PASSWORD: 428181Abc
-  #   volumes:
-  #     - mariadbdata:/var/lib/mysql
-  #     - ./initdb/mariadb:/docker-entrypoint-initdb.d
-  #   healthcheck:
-  #     test:
-  #       [
-  #         'CMD-SHELL',
-  #         'mysqladmin ping -h localhost -u benedicto --password=428181Abc'
-  #       ]
-  #     interval: 30s
-  #     timeout: 10s
-  #     retries: 5
+  mariadb:
+    image: mariadb:10.5
+    container_name: mariadb_db
+    network_mode: host
+    environment:
+      MYSQL_ROOT_PASSWORD: sua_senha_root
+      MYSQL_DATABASE: wkotserv_db
+      MYSQL_USER: benedicto
+      MYSQL_PASSWORD: 428181Abc
+    volumes:
+      - mariadbdata:/var/lib/mysql
+      - ./initdb/mariadb:/docker-entrypoint-initdb.d
+    healthcheck:
+      test:
+        [
+          'CMD-SHELL',
+          'mysqladmin ping -h localhost -u benedicto --password=428181Abc'
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
 
 volumes:
   pgdata:
   mariadbdata:
+
 
     # mariadb:
     #   image: mariadb:10.5

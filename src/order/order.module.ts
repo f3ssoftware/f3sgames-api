@@ -8,11 +8,11 @@ import { Order } from './order.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Order], 'paymentConnection'),
+    TypeOrmModule.forFeature([Order], 'websiteConnection'),
     PlayerModule,
     PagseguroIntegrationModule,
   ],
   providers: [PaymentService],
   controllers: [PaymentController],
 })
-export class PaymentModule {}
+export class PaymentModule { }
