@@ -17,7 +17,7 @@ export class CreatePlayerDto {
 
   @IsNotEmpty()
   @IsNumber()
-  town_id: number;
+  town_id?: number;
 
   @IsOptional()
   @IsString()
