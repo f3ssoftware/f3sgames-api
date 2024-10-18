@@ -1,5 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
-import { Account } from '../account/account.entity';
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('admin_accounts')
 export class AdminAccount {
@@ -7,8 +6,8 @@ export class AdminAccount {
   id: number;
 
   @Column()
-  account_id: number; 
+  account_id: number;  
 
-  @ManyToOne(() => Account, (account) => account.id, { eager: true })
-  account: Account;
+  @Column({ default: false })
+  god_account: boolean;
 }
