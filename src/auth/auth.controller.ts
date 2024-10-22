@@ -71,9 +71,12 @@ export class AuthController {
       return { message: 'You are not authorized to access this page.', statusCode: 403 };
     }
 
+    const jwt = await this.authService.login(account); 
+
     return {
       message: 'Request allowed.',
-      accountId: account.id,
+      token: jwt.token,  
+      accountId: account.id, 
     };
   }
 }
