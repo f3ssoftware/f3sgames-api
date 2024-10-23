@@ -40,6 +40,8 @@ import { AdminAccountModule } from './Admin Account/admin-account.module';
 import { AdminAccount } from './Admin Account/admin-account.entity';
 import { Coupon } from './coupons/coupon.entity';
 import { CouponModule } from './coupons/coupon.module';
+import { MailerModule } from '@nestjs-modules/mailer';
+import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 
 @Module({
   imports: [
@@ -67,7 +69,7 @@ import { CouponModule } from './coupons/coupon.module';
       inject: [ConfigService],
 
     }),
-  
+
     TypeOrmModule.forRootAsync({
       name: 'gameConnection',
       imports: [ConfigModule],
@@ -86,8 +88,31 @@ import { CouponModule } from './coupons/coupon.module';
         };
       },
       inject: [ConfigService],
-    
+
     }),
+
+    MailerModule.forRoot({
+      transport: {
+        host: 'smtp.office365.com', // Hotmail/Outlook Host SMTP - Just an example
+        port: 587, // Port 587 for TLS
+        secure: false, // Use false for TLS
+        auth: {
+          user: 'nando_carvalhoo@hotmail.com', // This is the origin e-mail. In the future will be the one from F3S Games
+          pass: '428181Abc#',
+        },
+      },
+      defaults: {
+        from: '"No Reply" <nando_carvalhoo@hotmail.com>', // De onde os e-mails serão enviados
+      },
+      template: {
+        dir: __dirname + '/templates', 
+        adapter: new HandlebarsAdapter(),
+        options: {
+          strict: true,
+        },
+      },
+    }),
+    
     PaymentModule,
     PlayerModule,
     PagseguroIntegrationModule,
@@ -110,4 +135,4 @@ import { CouponModule } from './coupons/coupon.module';
     CouponModule,
   ],
 })
-export class AppModule {}
+export class AppModule { }

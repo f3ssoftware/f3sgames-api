@@ -17,5 +17,6 @@ import { AccountService } from 'src/account/account.service';
   })],
   controllers: [AuthController],
   providers: [AuthService, LocalStrategy, JwtStrategy, AccountService],
+  exports: [AuthService, JwtModule], 
 })
 export class AuthModule {}
