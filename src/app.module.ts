@@ -38,6 +38,8 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { NewsTicker } from './news-ticker/entities/news-ticker.entity';
 import { AdminAccountModule } from './Admin Account/admin-account.module';
 import { AdminAccount } from './Admin Account/admin-account.entity';
+import { Coupon } from './coupons/coupon.entity';
+import { CouponModule } from './coupons/coupon.module';
 
 @Module({
   imports: [
@@ -56,7 +58,7 @@ import { AdminAccount } from './Admin Account/admin-account.entity';
           username: configService.get<string>('DATABASE_USERNAME'),
           password: configService.get<string>('DATABASE_PASSWORD'),
           database: configService.get<string>('DATABASE_NAME'),
-          entities: [NewsPost, Auction, Bid, NewsTicker, AdminAccount],
+          entities: [NewsPost, Auction, Bid, NewsTicker, AdminAccount, Coupon],
           autoLoadEntities: false,
           synchronize: true,
           logging: true
@@ -105,6 +107,7 @@ import { AdminAccount } from './Admin Account/admin-account.entity';
     PlayerNamelockModule,
     BidModule,
     AdminAccountModule,
+    CouponModule,
   ],
 })
 export class AppModule {}
